@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DBFile">
+      <HintPath>..\..\IPCameraDBParser\DBFile\bin\Debug\DBFile.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.16.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.16\lib\Net40\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -82,6 +85,9 @@
     </Compile>
     <Compile Include="Network\Downloading.cs" />
     <Compile Include="Network\LogFile.cs" />
+    <Compile Include="Network\WebDownload.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

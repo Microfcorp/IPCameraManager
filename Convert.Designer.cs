@@ -39,6 +39,7 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.button6 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -153,11 +154,22 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(64, 17);
             this.toolStripStatusLabel1.Text = "Ожидание";
             // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(613, 181);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(192, 23);
+            this.button6.TabIndex = 10;
+            this.button6.Text = "Анализ DB файла";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // Convert
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(817, 345);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.label1);
@@ -192,5 +204,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Button button6;
     }
 }

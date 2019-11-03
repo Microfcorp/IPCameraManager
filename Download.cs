@@ -11,6 +11,7 @@ using IPCamera.Settings;
 using HtmlAgilityPack;
 using System.Net;
 using System.IO;
+using DBFiles;
 
 namespace IPCamera
 {
@@ -51,21 +52,22 @@ namespace IPCamera
                     //Console.WriteLine(type);
                     //Console.WriteLine("----------");
 
-                    FileTreeNode tr;
+                    FileTreeNode tr;                   
 
                     if (size == "[DIRECTORY]")
                     {
                         tr = new FileTreeNode(path, GetServer(startpath + "" + path), FileTreeNode.TypeNode.Directory, startpath + "" + path);
                         tr.SelectedImageKey = "f";
-                        tr.ImageKey = "f";
+                        tr.ImageKey = "f";                      
                     }
                     else
                     {
                         tr = new FileTreeNode(path, FileTreeNode.TypeNode.File, startpath + "" + path);
                         tr.SelectedImageKey = "v";
-                        tr.ImageKey = "v";
+                        tr.ImageKey = "v";                     
                     }
 
+                    tr.ToolTipText = date;
                     list.Add(tr);
                 }
             }
@@ -93,7 +95,7 @@ namespace IPCamera
             label1.Text = "Свободно места на SD (" + formatFileSize(int.Parse(DeviceInfo["sdfreespace"])) + ") из " + formatFileSize(int.Parse(DeviceInfo["sdtotalspace"]));
             progressBar2.Maximum = int.Parse(DeviceInfo["sdtotalspace"]);
             progressBar2.Value = int.Parse(DeviceInfo["sdtotalspace"]) - int.Parse(DeviceInfo["sdfreespace"]);
-            label2.Text = (DeviceInfo["sdstatus"] == "Ready") ? "Ошибка SD карты" : "SD карта работает исправно";
+            label2.Text = (DeviceInfo["sdstatus"].Contains("Ready")) ? "SD карта работает исправно" : "Ошибка SD карты";
             label3.Text = "Камера запущенна: " + DeviceInfo["startdate"];
             label6.Text = "Камера работает: " + (DateTime.Now - DateTime.Parse(DeviceInfo["startdate"])).ToString().Split('.')[0];
 
@@ -125,6 +127,7 @@ namespace IPCamera
                     //Console.WriteLine("----------");
 
                     FileTreeNode tr = new FileTreeNode(path, GetServer(startpath + "" + path), FileTreeNode.TypeNode.Directory, startpath + "" + path);
+                    tr.ToolTipText = date;
                     treeView1.Nodes.Add(tr);
                 }
             }
@@ -162,7 +165,7 @@ namespace IPCamera
         {
             if (fs.typeNode == FileTreeNode.TypeNode.File & fs.Checked)
             {
-                //progressBar1.Maximum += 100;
+                progressBar1.Maximum += 100;
                 //Directory.CreateDirectory(pathdown + fs.URL);
                 BtnDownload(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + fs.URL, pathdown + "\\" + fs.URL.Split('/').Where(x => x.Contains(".")).ToArray()[0]);
             }
@@ -178,8 +181,10 @@ namespace IPCamera
 
         private void button1_Click(object sender, EventArgs e)
         {
-            progressBar1.Maximum = 100;
+            progressBar1.Maximum = 0;
+            progressBar1.Value = 0;
             progressBar1.Style = ProgressBarStyle.Blocks;
+            Sizefiles.Clear();
 
             FolderBrowserDialog fd = new FolderBrowserDialog();
             fd.Description = "Папка для загрузки файлов";
@@ -218,7 +223,7 @@ namespace IPCamera
 
         private void BtnDownload(string path, string savepath)
         {
-            using (WebClient wc = new WebClient())
+            using (WebDownload wc = new WebDownload())
             {
                 wc.DownloadProgressChanged += wc_DownloadProgressChanged;
                 wc.DownloadFileCompleted += (object sender, AsyncCompletedEventArgs e) => { if (savepath.Contains(".264")) File.Move(savepath, savepath + ".h264"); };
@@ -230,21 +235,40 @@ namespace IPCamera
                 );
             }
         }
+
+        SortedList<string, byte> Sizefiles = new SortedList<string, byte>();
+
         // Event to track the progress
         void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            //progressBar1.Value = e.ProgressPercentage;
-            progressBar1.Style = ProgressBarStyle.Marquee;
-            progressBar1.Value = progressBar1.Maximum;
+            var WC = sender as WebDownload;
+
+            if (!Sizefiles.ContainsKey(WC.UriDownload))
+            {
+                Sizefiles.Add(WC.UriDownload, (byte)e.ProgressPercentage);
+                Console.WriteLine(WC.UriDownload);
+            }
+
+            Sizefiles[WC.UriDownload] = (byte)e.ProgressPercentage;
+
+            var percents = 0x00;
+            foreach (var item in Sizefiles)
+                percents += (int)item.Value;
+
+            progressBar1.Value = percents;
+
+            //progressBar1.Style = ProgressBarStyle.Marquee;
+            //progressBar1.Value = progressBar1.Maximum;
 
             Log = "Идет скачивание файлов... " /*+ progressBar1.Value + "%"*/;
 
-            if (e.ProgressPercentage == 100)
+            if (Sizefiles.Values.Sum(x => (int)x) == progressBar1.Maximum)
             {
                 Log = "Скачивание файлов завершено";
-                progressBar1.Style = ProgressBarStyle.Blocks;
-                progressBar1.Value = progressBar1.Minimum;
-                //progressBar1.Style = ProgressBarStyle.Marquee;
+                //progressBar1.Style = ProgressBarStyle.Blocks;
+                //progressBar1.Value = progressBar1.Minimum;
+                progressBar1.Style = ProgressBarStyle.Marquee;
+                //MessageBox.Show("Скачивание завершено");
             }
         }
 
@@ -285,6 +309,32 @@ namespace IPCamera
                     }));
 
                 System.Threading.Thread.Sleep(1000);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fd = new FolderBrowserDialog();
+            fd.Description = "Папка для загрузки файлов";
+
+            if (fd.ShowDialog() == DialogResult.OK)
+            {
+                OpenFileDialog opg = new OpenFileDialog();
+                opg.Filter = "DB File|*.db";
+
+                if (opg.ShowDialog() == DialogResult.OK)
+                {
+                    var db = DBFile.Read(opg.FileName);
+                    progressBar1.Maximum = 0;
+                    progressBar1.Value = 0;
+
+                    foreach (var item in db)
+                    {
+                        MessageBox.Show(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + item.HTTPPath);
+                        progressBar1.Maximum += 100;
+                        BtnDownload(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + item.HTTPPath, fd.SelectedPath + "\\" + item.HTTPPath.Split('/').Where(x => x.Contains(".")).ToArray()[0]);
+                    }
+                }
             }
         }
     }

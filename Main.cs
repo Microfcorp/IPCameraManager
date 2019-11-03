@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -122,6 +123,32 @@ namespace IPCamera
         {
             LogView cnv = new LogView();
             cnv.ShowDialog();
+        }
+
+        private void создатьM3UToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //#EXTM3U
+            //
+            //#EXTINF:123, Исполнитель - Композиция
+            //C:\Documents and Settings\Я\Моя музыка\Песня.mp3
+
+            var structures = Structures.Load();
+
+            var m3u = "#EXTM3U" + Environment.NewLine;
+            m3u += Environment.NewLine;
+            m3u += "#EXTINF:-1, IPCamera - Second is " +IP + Environment.NewLine;
+            m3u += String.Format("rtsp://{0}:{1}@{2}:{3}/iphone/{4}", structures.Name, structures.Password, structures.IP, structures.RTSPPort, "11") + Environment.NewLine;
+            m3u += Environment.NewLine;
+            m3u += "#EXTINF:-1, IPCamera - First is " + IP + Environment.NewLine;
+            m3u += String.Format("rtsp://{0}:{1}@{2}:{3}/iphone/{4}", structures.Name, structures.Password, structures.IP, structures.RTSPPort, "12");
+
+            SaveFileDialog svf = new SaveFileDialog();
+            svf.Filter = "M3U Файл|*.m3u";
+            svf.FileName = "IP Camera";
+            if(svf.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(svf.FileName, m3u);
+            }
         }
     }
 }

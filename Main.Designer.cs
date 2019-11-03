@@ -47,6 +47,7 @@
             this.просмотрФотоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.настройкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.логиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.создатьM3UToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -67,7 +68,7 @@
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Location = new System.Drawing.Point(27, 27);
+            this.panel1.Location = new System.Drawing.Point(62, 27);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(534, 163);
             this.panel1.TabIndex = 2;
@@ -135,6 +136,7 @@
             this.button1.TabIndex = 7;
             this.button1.Text = "Сохранить";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox3
             // 
@@ -204,11 +206,12 @@
             this.загрузкаФайловToolStripMenuItem,
             this.просмотрВидеоToolStripMenuItem,
             this.просмотрФотоToolStripMenuItem,
+            this.создатьM3UToolStripMenuItem,
             this.настройкиToolStripMenuItem,
             this.логиToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(584, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(676, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -254,11 +257,18 @@
             this.логиToolStripMenuItem.Text = "Логи";
             this.логиToolStripMenuItem.Click += new System.EventHandler(this.логиToolStripMenuItem_Click);
             // 
+            // создатьM3UToolStripMenuItem
+            // 
+            this.создатьM3UToolStripMenuItem.Name = "создатьM3UToolStripMenuItem";
+            this.создатьM3UToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
+            this.создатьM3UToolStripMenuItem.Text = "Создать M3U";
+            this.создатьM3UToolStripMenuItem.Click += new System.EventHandler(this.создатьM3UToolStripMenuItem_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 197);
+            this.ClientSize = new System.Drawing.Size(676, 197);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -297,5 +307,6 @@
         private System.Windows.Forms.ToolStripMenuItem просмотрФотоToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem настройкиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem логиToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem создатьM3UToolStripMenuItem;
     }
 }

@@ -18,6 +18,7 @@ namespace IPCamera
 
         public const string ffmpeg = "ffmpeg.exe";
         public const string converter = "convert.exe";
+        public const string dbreader = "IPCameraDBParser.exe";
 
         string Final = null;
         decimal FPS;
@@ -198,6 +199,16 @@ namespace IPCamera
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
             FPS = numericUpDown1.Value;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog opg = new OpenFileDialog();
+            opg.Filter = "Файлы .db|*.db";
+            opg.Multiselect = true;
+
+            if (opg.ShowDialog() == DialogResult.OK)
+                Process.Start(dbreader, opg.FileName);
         }
     }
 }
