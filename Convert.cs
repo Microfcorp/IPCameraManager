@@ -15,6 +15,7 @@ namespace IPCamera
     public partial class Convert : Form
     {
         public const string PFfmpeg = "-r {0} -i {1} -i {2} -acodec copy -vcodec copy {3}"; //-vcodec copy
+        public const string PFfmpegR = "-i {0} -i {1} -c:v libx264 -minrate 2M -maxrate 2M -b:v 2M -pix_fmt yuv420p -r 16 {2}"; //Раcширенное
 
         public const string ffmpeg = "ffmpeg.exe";
         public const string converter = "convert.exe";
@@ -72,16 +73,34 @@ namespace IPCamera
 
             while (!p1.HasExited) ;
             PlusPB();
+           
+            if (File.Exists(Final + "\\" + pathname + "_ff.mkv"))
+            {
+                MessageBox.Show("Файл уже существует. Удалите файл и повторите попытку позднее");
+                toolStripStatusLabel1.Text = "Ошибка конвертирования";
+                return;
+            }
 
             var p2 = new Process(); //запуск конвертера
-            p2.StartInfo = new ProcessStartInfo(ffmpeg, String.Format(PFfmpeg, //Запуск фмпега 
-                FPS.ToString().Replace(',', '.'),
-                "\"" + path264 + ".mp4" + "\"",
-                "\"" + path264 + ".wav" + "\"", 
-                "\"" + Final + "\\" + pathname + "_ff.mkv" + "\""
-                ));
-            p2.StartInfo.UseShellExecute = false;
-            p2.StartInfo.CreateNoWindow = true;
+            if (!RazhConv)
+            {
+                p2.StartInfo = new ProcessStartInfo(ffmpeg, String.Format(PFfmpeg, //Запуск фмпега 
+                    FPS.ToString().Replace(',', '.'),
+                    "\"" + path264 + ".mp4" + "\"",
+                    "\"" + path264 + ".wav" + "\"",
+                    "\"" + Final + "\\" + pathname + "_ff.mkv" + "\""
+                    ));
+                p2.StartInfo.UseShellExecute = false;
+                p2.StartInfo.CreateNoWindow = true;
+            }
+            else
+                p2.StartInfo = new ProcessStartInfo(ffmpeg, String.Format(PFfmpegR, //Запуск фмпега 
+                    "\"" + path264 + ".mp4" + "\"",
+                    "\"" + path264 + ".wav" + "\"",
+                    "\"" + Final + "\\" + pathname + "_ff.mkv" + "\""
+                    ));
+            //p2.StartInfo.UseShellExecute = false;
+            //p2.StartInfo.CreateNoWindow = true;
             p2.Start();
             PlusPB();
 
@@ -159,12 +178,12 @@ namespace IPCamera
                 GetFiles(opg.FileNames);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void StartConvert()
         {
             List<string> SelctedFile = new List<string>();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {
-                if(checkedListBox1.GetItemChecked(i))
+                if (checkedListBox1.GetItemChecked(i))
                     SelctedFile.Add(checkedListBox1.Items[i].ToString());
             }
 
@@ -174,10 +193,16 @@ namespace IPCamera
             foreach (var item in SelctedFile.ToArray())
             {
                 ConvertStart(item);
-                button3.Enabled = false;                
+                button3.Enabled = false;
             }
             button3.Enabled = true;
             toolStripStatusLabel1.Text = "Конвертирование запущенно";
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            RazhConv = false;
+            StartConvert();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -209,6 +234,26 @@ namespace IPCamera
 
             if (opg.ShowDialog() == DialogResult.OK)
                 Process.Start(dbreader, opg.FileName);
+        }
+
+        bool RazhConv = false;
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            RazhConv = true;
+            StartConvert();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                checkedListBox1.SetItemChecked(i, true);
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                checkedListBox1.SetItemChecked(i, false);
         }
     }
 }

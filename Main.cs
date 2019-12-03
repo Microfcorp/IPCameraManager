@@ -6,8 +6,10 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.ServiceModel.Discovery;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace IPCamera
 {
@@ -17,11 +19,11 @@ namespace IPCamera
         {
             get
             {
-                return textBox1.Text;
+                return comboBox1.Text;
             }
             set
             {
-                textBox1.Text = value;
+                comboBox1.Text = value;
             }
         }
         private string UserName
@@ -85,13 +87,37 @@ namespace IPCamera
         }
         private void настройкиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            panel1.Visible = !panel1.Visible;
+            panel1.Visible = !panel1.Visible;           
+        }
+
+        void SearchONVIF()
+        {
+            var endPoint = new UdpDiscoveryEndpoint(DiscoveryVersion.WSDiscoveryApril2005);
+
+            var discoveryClient = new DiscoveryClient(endPoint);
+
+            discoveryClient.FindProgressChanged += discoveryClient_FindProgressChanged;
+
+            FindCriteria findCriteria = new FindCriteria();
+            findCriteria.Duration = TimeSpan.MaxValue;
+            findCriteria.MaxResults = int.MaxValue;
+            // Edit: optionally specify contract type, ONVIF v1.0
+            findCriteria.ContractTypeNames.Add(new XmlQualifiedName("NetworkVideoTransmitter",
+                "http://www.onvif.org/ver10/network/wsdl"));
+
+            discoveryClient.FindAsync(findCriteria);
+        }
+
+        void discoveryClient_FindProgressChanged(object sender, FindProgressChangedEventArgs e)
+        {
+            for (int i = 0; i < e.EndpointDiscoveryMetadata.ListenUris.Count; i++)
+                comboBox1.Items.Add(e.EndpointDiscoveryMetadata.ListenUris[i].Host);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             panel1.Visible = false;
-            var structures = new Structures(IP, UserName, Password, HTTPPort, RTSPPort);
+            var structures = new Structures(IP, UserName, Password, HTTPPort, RTSPPort, Structures.Load().ValueMD, Structures.Load().ZoneDetect);
             structures.Save();
         }
 
@@ -149,6 +175,38 @@ namespace IPCamera
             {
                 File.WriteAllText(svf.FileName, m3u);
             }
+        }
+
+        private void openCVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CV.CV cnv = new CV.CV();
+            cnv.Show();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Settings.Structures.DeleteSetting();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SearchONVIF();
+        }
+    }
+    public static class ExtensionMethods
+    {
+        public static decimal Map(this decimal value, decimal fromSource, decimal toSource, decimal fromTarget, decimal toTarget)
+        {
+            return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
+        }
+        public static Image Crop(this Image image, Rectangle selection)
+        {
+            Bitmap bmp = image as Bitmap;
+            if (bmp == null)
+                throw new ArgumentException("No valid bitmap");
+            Bitmap cropBmp = bmp.Clone(selection, bmp.PixelFormat);
+            image.Dispose();
+            return cropBmp;
         }
     }
 }

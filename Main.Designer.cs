@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,9 +45,12 @@
             this.загрузкаФайловToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.просмотрВидеоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.просмотрФотоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.создатьM3UToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.настройкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.логиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.создатьM3UToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openCVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -57,22 +60,36 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Silver;
+            this.panel1.Controls.Add(this.button3);
+            this.panel1.Controls.Add(this.comboBox1);
+            this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.numericUpDown2);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.numericUpDown1);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.textBox3);
             this.panel1.Controls.Add(this.textBox2);
-            this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Location = new System.Drawing.Point(62, 27);
+            this.panel1.Location = new System.Drawing.Point(89, 27);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(534, 163);
             this.panel1.TabIndex = 2;
             this.panel1.Visible = false;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button2.ForeColor = System.Drawing.Color.Black;
+            this.button2.Location = new System.Drawing.Point(468, 108);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(63, 23);
+            this.button2.TabIndex = 11;
+            this.button2.Text = "Удалить";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // numericUpDown2
             // 
@@ -152,13 +169,6 @@
             this.textBox2.Size = new System.Drawing.Size(253, 20);
             this.textBox2.TabIndex = 5;
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(86, 23);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(253, 20);
-            this.textBox1.TabIndex = 4;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -208,10 +218,11 @@
             this.просмотрФотоToolStripMenuItem,
             this.создатьM3UToolStripMenuItem,
             this.настройкиToolStripMenuItem,
-            this.логиToolStripMenuItem});
+            this.логиToolStripMenuItem,
+            this.openCVToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(676, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(733, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -243,6 +254,13 @@
             this.просмотрФотоToolStripMenuItem.Text = "Просмотр фото";
             this.просмотрФотоToolStripMenuItem.Click += new System.EventHandler(this.просмотрФотоToolStripMenuItem1_Click);
             // 
+            // создатьM3UToolStripMenuItem
+            // 
+            this.создатьM3UToolStripMenuItem.Name = "создатьM3UToolStripMenuItem";
+            this.создатьM3UToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
+            this.создатьM3UToolStripMenuItem.Text = "Создать M3U";
+            this.создатьM3UToolStripMenuItem.Click += new System.EventHandler(this.создатьM3UToolStripMenuItem_Click);
+            // 
             // настройкиToolStripMenuItem
             // 
             this.настройкиToolStripMenuItem.Name = "настройкиToolStripMenuItem";
@@ -257,18 +275,36 @@
             this.логиToolStripMenuItem.Text = "Логи";
             this.логиToolStripMenuItem.Click += new System.EventHandler(this.логиToolStripMenuItem_Click);
             // 
-            // создатьM3UToolStripMenuItem
+            // openCVToolStripMenuItem
             // 
-            this.создатьM3UToolStripMenuItem.Name = "создатьM3UToolStripMenuItem";
-            this.создатьM3UToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
-            this.создатьM3UToolStripMenuItem.Text = "Создать M3U";
-            this.создатьM3UToolStripMenuItem.Click += new System.EventHandler(this.создатьM3UToolStripMenuItem_Click);
+            this.openCVToolStripMenuItem.Name = "openCVToolStripMenuItem";
+            this.openCVToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
+            this.openCVToolStripMenuItem.Text = "OpenCV";
+            this.openCVToolStripMenuItem.Click += new System.EventHandler(this.openCVToolStripMenuItem_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(81, 23);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(258, 21);
+            this.comboBox1.TabIndex = 12;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(387, 108);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 13;
+            this.button3.Text = "Автопоиск";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(676, 197);
+            this.ClientSize = new System.Drawing.Size(733, 197);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -295,7 +331,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
@@ -308,5 +343,9 @@
         private System.Windows.Forms.ToolStripMenuItem настройкиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem логиToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem создатьM3UToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openCVToolStripMenuItem;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button3;
     }
 }

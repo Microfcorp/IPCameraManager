@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -40,9 +41,19 @@ namespace IPCamera.Settings
         public uint RTSPPort;
 
         /// <summary>
+        /// Порог детектора движения
+        /// </summary>
+        public decimal ValueMD;
+
+        /// <summary>
+        /// Зона детектора движения
+        /// </summary>
+        public Rectangle ZoneDetect;
+
+        /// <summary>
         /// Нулевая структура
         /// </summary>
-        public static Structures Null = new Structures("http://localhost","","",80,554);
+        public static Structures Null = new Structures("localhost","","",80,554,270000, new Rectangle(0,0,10,10));
 
         /// <summary>
         /// Обыявление структуры настроек
@@ -52,7 +63,9 @@ namespace IPCamera.Settings
         /// <param name="Password">Пароль</param>
         /// <param name="HTTPPort">Порт HTTP</param>
         /// <param name="RTSPPort">Порт RTSP</param>
-        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort)
+        /// <param name="vdm">Порог детектора движения</param>
+        /// <param name="rt">Зона детектора движения</param>
+        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort, decimal vdm, Rectangle rt)
         {
             this.IP = IP;
             //this.Uri = new Uri(IP);
@@ -60,6 +73,8 @@ namespace IPCamera.Settings
             this.Password = Password;
             this.HTTPPort = HTTPPort;
             this.RTSPPort = RTSPPort;
+            this.ValueMD = vdm;
+            this.ZoneDetect = rt;
         }
 
         /// <summary>
@@ -67,7 +82,7 @@ namespace IPCamera.Settings
         /// </summary>
         /// <param name="path">Путь к файлу</param>
         /// <returns></returns>
-        public static Structures Load(string path = "Settings.bin")
+        public static Structures Load(string path)
         {
             BinaryFormatter bf = new BinaryFormatter();
 
@@ -83,11 +98,22 @@ namespace IPCamera.Settings
             return Structures.Null;
         }
         /// <summary>
+        /// Загрузить настройки из фалйа
+        /// </summary>
+        /// <param name="path">Путь к файлу</param>
+        /// <returns></returns>
+        public static Structures Load()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\setting.dat";
+            return Load(path);
+        }
+        /// <summary>
         /// Сохранить настройки в файл
         /// </summary>
         /// <param name="path">Путь к файлу</param>
-        public void Save(string path = "Settings.bin")
+        public void Save(string path)
         {
+            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\");
             BinaryFormatter bf = new BinaryFormatter();
 
             using (FileStream fs = File.Create(path))
@@ -97,13 +123,49 @@ namespace IPCamera.Settings
         /// Сохранить настройки в файл
         /// </summary>
         /// <param name="path">Путь к файлу</param>
+        public void Save()
+        {
+            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\");
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\setting.dat";
+            Save(path);
+        }
+        /// <summary>
+        /// Сохранить настройки в файл
+        /// </summary>
+        /// <param name="path">Путь к файлу</param>
         /// <param name="str">Структура настроек</param>
-        public static void Save(Structures str, string path = "Settings.bin")
+        public static void Save(Structures str, string path)
         {
             BinaryFormatter bf = new BinaryFormatter();
 
             using (FileStream fs = File.Create(path))
                 bf.Serialize(fs, str);
+        }
+        /// <summary>
+        /// Сохранить настройки в файл
+        /// </summary>
+        /// <param name="path">Путь к файлу</param>
+        /// <param name="str">Структура настроек</param>
+        public static void Save(Structures str)
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\setting.dat";
+            Save(str, path);
+        }
+        /// <summary>
+        /// Удалить файл настроек
+        /// </summary>
+        public static void DeleteSetting()
+        {
+            DeleteSetting(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\setting.dat");
+        }
+        /// <summary>
+        /// Удалить файл настроек
+        /// </summary>
+        /// <param name="path">Путь к файлу</param>
+        public static void DeleteSetting(string path)
+        {
+            if (File.Exists(path))
+                File.Delete(path);
         }
 
         public string URLToHTTPPort

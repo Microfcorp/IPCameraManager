@@ -12,6 +12,7 @@ using HtmlAgilityPack;
 using System.Net;
 using System.IO;
 using DBFiles;
+using System.Diagnostics;
 
 namespace IPCamera
 {
@@ -66,8 +67,8 @@ namespace IPCamera
                         tr.SelectedImageKey = "v";
                         tr.ImageKey = "v";                     
                     }
-
-                    tr.ToolTipText = date;
+                    tr.ContextMenuStrip = contextMenuStrip1;
+                    tr.ToolTipText = date + " (" + (size) + ")";
                     list.Add(tr);
                 }
             }
@@ -127,7 +128,8 @@ namespace IPCamera
                     //Console.WriteLine("----------");
 
                     FileTreeNode tr = new FileTreeNode(path, GetServer(startpath + "" + path), FileTreeNode.TypeNode.Directory, startpath + "" + path);
-                    tr.ToolTipText = date;
+                    tr.ToolTipText = date + " (" + size + ")";
+                    tr.ContextMenuStrip = contextMenuStrip1;                    
                     treeView1.Nodes.Add(tr);
                 }
             }
@@ -135,6 +137,8 @@ namespace IPCamera
             backgroundWorker1.RunWorkerAsync(DateTime.Now - DateTime.Parse(DeviceInfo["startdate"]));
             Log = "Загрузка завершена";
         }
+
+        FileTreeNode selected;
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -246,7 +250,7 @@ namespace IPCamera
             if (!Sizefiles.ContainsKey(WC.UriDownload))
             {
                 Sizefiles.Add(WC.UriDownload, (byte)e.ProgressPercentage);
-                Console.WriteLine(WC.UriDownload);
+                //Console.WriteLine(WC.UriDownload);
             }
 
             Sizefiles[WC.UriDownload] = (byte)e.ProgressPercentage;
@@ -260,7 +264,7 @@ namespace IPCamera
             //progressBar1.Style = ProgressBarStyle.Marquee;
             //progressBar1.Value = progressBar1.Maximum;
 
-            Log = "Идет скачивание файлов... " /*+ progressBar1.Value + "%"*/;
+            Log = "Идет скачивание файлов... " + (int)((decimal)percents).Map(0, progressBar1.Maximum, 0, 100) + "%";
 
             if (Sizefiles.Values.Sum(x => (int)x) == progressBar1.Maximum)
             {
@@ -295,6 +299,14 @@ namespace IPCamera
                 MessageBox.Show("Настройки успешно изменены.");
         }
 
+        private string TimeSpanToString(TimeSpan ts)
+        {
+            if(ts.Days == 0)
+                return String.Format("{0}:{1}:{2}", ts.Hours, ts.Minutes, ts.Seconds);
+            else
+                return String.Format("{0} days {1}:{2}:{3}", ts.Days, ts.Hours, ts.Minutes, ts.Seconds);
+        }
+
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             TimeSpan tp = (TimeSpan)e.Argument;
@@ -305,7 +317,7 @@ namespace IPCamera
                 if(label6.InvokeRequired)
                     label6?.Invoke(new Action(() =>
                     {
-                        label6.Text = "Камера работает: " + tp.ToString().Split('.')[0];
+                        label6.Text = "Камера работает: " + TimeSpanToString(tp);
                     }));
 
                 System.Threading.Thread.Sleep(1000);
@@ -313,7 +325,7 @@ namespace IPCamera
         }
 
         private void button4_Click(object sender, EventArgs e)
-        {
+        {            
             FolderBrowserDialog fd = new FolderBrowserDialog();
             fd.Description = "Папка для загрузки файлов";
 
@@ -327,15 +339,41 @@ namespace IPCamera
                     var db = DBFile.Read(opg.FileName);
                     progressBar1.Maximum = 0;
                     progressBar1.Value = 0;
+                    progressBar1.Style = ProgressBarStyle.Blocks;
+                    Sizefiles.Clear();
 
                     foreach (var item in db)
                     {
-                        MessageBox.Show(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + item.HTTPPath);
+                        //MessageBox.Show(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + item.HTTPPath);
                         progressBar1.Maximum += 100;
                         BtnDownload(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + item.HTTPPath, fd.SelectedPath + "\\" + item.HTTPPath.Split('/').Where(x => x.Contains(".")).ToArray()[0]);
                     }
                 }
             }
+        }
+
+        private void скачатьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selected == null) return;
+            progressBar1.Maximum = 0;
+            progressBar1.Value = 0;
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            Sizefiles.Clear();
+
+            FolderBrowserDialog fd = new FolderBrowserDialog();
+            fd.Description = "Папка для загрузки файлов";
+
+            if (fd.ShowDialog() == DialogResult.OK)
+            {
+                progressBar1.Maximum += 100;
+                BtnDownload(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + selected.URL, fd.SelectedPath + "\\" + selected.URL.Split('/').Where(x => x.Contains(".")).ToArray()[0]);
+                //MessageBox.Show(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + selected.URL);
+            }
+        }
+
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            selected = (FileTreeNode)e.Node;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using IPCamera.ComandArgs;
 
 namespace IPCamera
 {
@@ -11,11 +12,20 @@ namespace IPCamera
         /// Главная точка входа для приложения.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            Parser p = new Parser(args);
+
+            if (p.FindParams("-c"))
+            {
+               // Application.Run(new Convert(args));
+            }
+            else
+            {
+                Application.Run(new Main());
+            }
         }
     }
 }

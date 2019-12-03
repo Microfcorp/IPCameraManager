@@ -14,7 +14,7 @@ namespace IPCamera
     {
         public const string RTSP = "rtsp://{0}:{1}@{2}:{3}/iphone/{4}"; //rtsp://admin:admin@192.168.1.34/iphone/11
 
-        string stream = "11"; //11 and 12
+        string stream = ((int)Network.RTSPStream.First_Stream).ToString(); //11 and 12
 
         Process s;
 
@@ -28,7 +28,7 @@ namespace IPCamera
             var Setting = IPCamera.Settings.Structures.Load();
 
             if (s != null) s.Kill();
-
+           
             s = Process.Start("ffplay.exe", String.Format(RTSP, Setting.Name, Setting.Password, Setting.IP, Setting.RTSPPort, stream) 
                 + " -x 640 -y 360");
             s.StartInfo.UseShellExecute = false;
@@ -45,14 +45,14 @@ namespace IPCamera
             if (e.Control)
                 if (e.KeyCode == Keys.S)
                 {
-                    stream = stream == "11" ? "12" : "11";
+                    stream = stream == ((int)Network.RTSPStream.First_Stream).ToString() ? ((int)Network.RTSPStream.Second_Stream).ToString() : ((int)Network.RTSPStream.First_Stream).ToString();
                     Play();
                 }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            stream = stream == "11" ? "12" : "11";
+            stream = stream == Network.RTSPStream.First_Stream.ToString() ? ((int)Network.RTSPStream.Second_Stream).ToString() : ((int)Network.RTSPStream.First_Stream).ToString();
             Play();
         }
 
