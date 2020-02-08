@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -12,9 +13,9 @@ namespace IPCamera
 {
     public partial class ImageV : Form
     {
-        public const string Photo = "http://{0}:{1}/web/auto.jpg?-usr={2}&-pwd={3}&";
+        
 
-        Structures structures = Structures.Load();
+        Structures structures;
 
         public int FPSMillis
         {
@@ -23,9 +24,12 @@ namespace IPCamera
                 return (int)(((float)1 / (float)trackBar1.Value) * 1000);
             }
         }
-        public ImageV()
-        {
+        public ImageV(uint Selected)
+        {           
             InitializeComponent();
+
+            structures = Structures.Load()[Selected];
+
             _btn1xScale = button1.Location.X / (float)this.Width;
             _btn1yScale = button1.Location.Y / (float)this.Height;
 
@@ -35,7 +39,7 @@ namespace IPCamera
 
         private void ImageV_Load(object sender, EventArgs e)
         {
-
+            timer1.Interval = FPSMillis;
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
@@ -45,12 +49,14 @@ namespace IPCamera
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            pictureBox1.ImageLocation = (String.Format(Photo, structures.IP, structures.HTTPPort, structures.Name, structures.Password));
+            pictureBox1.ImageLocation = structures.GetPhotoStream;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            pictureBox1.Image.Save(DateTime.Now.ToString().Replace(":", "-") + ".jpg");
+            var file = DateTime.Now.ToString().Replace(":", "-") + ".jpg";
+            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\IP Camera\\" + structures.IP);
+            pictureBox1.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\IP Camera\\" + structures.IP + "\\" + file);
         }
 
         // X, Y scaling variables for btn1

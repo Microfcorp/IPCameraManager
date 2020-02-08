@@ -20,19 +20,24 @@ namespace IPCamera.CV
 {
     public partial class CV : Form
     {
-        Settings.Structures set = Settings.Structures.Load();
+        Settings.Structures set;
 
         static bool NoDetect = false;
-        Rectangle p = Settings.Structures.Load().ZoneDetect;
+        Rectangle p;
 
         MootionDetect md;
         ImageBox im = new ImageBox();
-        long Detects;  
-        public CV()
+        long Detects;
+        uint Selected;
+        public CV(uint Selected)
         {
             InitializeComponent();
+            this.Selected = Selected;
+            set = Settings.Structures.Load()[Selected];
 
-            md = new MootionDetect(String.Format("rtsp://{0}:{1}@{2}:{3}/iphone/{4}", set.Name, set.Password, set.IP, set.RTSPPort, ((int)Network.RTSPStream.Second_Stream).ToString()));
+            p = set.ZoneDetect;
+
+            md = new MootionDetect(String.Format(Network.Network.RTSP, set.Name, set.Password, set.IP, set.RTSPPort, ((int)Network.RTSPStream.Second_Stream).ToString()));
             //md = new MootionDetect("C:\\Users\\Лехап\\Desktop\\Барсик\\P191202_170012_171018.264.h264_ff.mp4");
             md.OnMD += (long s, Mat image, long m) => { im.Image = image; if (s != default(double)) { Detect(s); Detects = s; } };
 
@@ -59,8 +64,10 @@ namespace IPCamera.CV
                 {
                     md.Zone = p;
                     //im.CreateGraphics().Clear(Color.Gray);
-                    set.ZoneDetect = p;
-                    set.Save();
+                    var s = Settings.Structures.Load();
+                    s[Selected].ZoneDetect = p;
+                    Settings.Structures.Save(s);
+                    set = Settings.Structures.Load()[Selected];
                 }
             };
             im.Invalidated += (object sender, InvalidateEventArgs e) => im.CreateGraphics().DrawRectangle(new Pen(Brushes.Blue, 3f), p);
@@ -74,7 +81,7 @@ namespace IPCamera.CV
         private void CV_FormClosing(object sender, FormClosingEventArgs e)
         {
             md.Dispose();
-            Console.WriteLine(max.Max());
+            //Console.WriteLine(max.Max());
         }
 
         private void CV_Resize(object sender, EventArgs e)
@@ -99,14 +106,16 @@ namespace IPCamera.CV
                 Console.Beep(2500, 500);
                 if (!backgroundWorker1.IsBusy) { backgroundWorker1.RunWorkerAsync(); }
                 Console.WriteLine("Detect!!!");
-                im.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\md_"+DateTime.Now.ToString().Replace(":","_")+".jpg");             
+                im.Image.GetInputArray().GetUMat().Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\md_"+DateTime.Now.ToString().Replace(":","_")+".jpg");             
             }           
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            set.ValueMD = numericUpDown1.Value;
-            set.Save();            
+            var s = Settings.Structures.Load();
+            s[Selected].ValueMD = numericUpDown1.Value;
+            Settings.Structures.Save(s);
+            set = Settings.Structures.Load()[Selected];
             panel1.Visible = false;
         }
 
@@ -133,9 +142,11 @@ namespace IPCamera.CV
         }
 
         private void button2_Click(object sender, EventArgs e)
-        {
-            numericUpDown1.Value = set.ValueMD = (decimal)Detects;
-            set.Save();
+        {         
+            var s = Settings.Structures.Load();
+            s[Selected].ValueMD = numericUpDown1.Value  = (decimal)Detects;
+            Settings.Structures.Save(s);
+            set = Settings.Structures.Load()[Selected];
         }
     }
 }

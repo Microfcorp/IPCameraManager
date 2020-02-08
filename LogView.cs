@@ -13,13 +13,14 @@ namespace IPCamera
 {
     public partial class LogView : Form
     {
-        Settings.Structures sett = Settings.Structures.Load();
+        Settings.Structures sett;
 
         int typelog = 1; //0 - All, 1 - IR. 2 - !IR
 
-        public LogView()
+        public LogView(uint Selected)
         {
             InitializeComponent();
+            sett = Settings.Structures.Load()[Selected];
         }
 
         private void LogRun()

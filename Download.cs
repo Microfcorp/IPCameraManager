@@ -18,10 +18,11 @@ namespace IPCamera
 {
     public partial class Download : Form
     {
-        Structures setting = Structures.Load();
-        public Download()
+        Structures setting;
+        public Download(uint Selected)
         {
             InitializeComponent();
+            setting = Structures.Load()[Selected];
         }
 
         FileTreeNode[] GetServer(string startpath = "")
@@ -53,19 +54,19 @@ namespace IPCamera
                     //Console.WriteLine(type);
                     //Console.WriteLine("----------");
 
-                    FileTreeNode tr;                   
+                    FileTreeNode tr;
 
                     if (size == "[DIRECTORY]")
                     {
                         tr = new FileTreeNode(path, GetServer(startpath + "" + path), FileTreeNode.TypeNode.Directory, startpath + "" + path);
                         tr.SelectedImageKey = "f";
-                        tr.ImageKey = "f";                      
+                        tr.ImageKey = "f";
                     }
                     else
                     {
                         tr = new FileTreeNode(path, FileTreeNode.TypeNode.File, startpath + "" + path);
                         tr.SelectedImageKey = "v";
-                        tr.ImageKey = "v";                     
+                        tr.ImageKey = "v";
                     }
                     tr.ContextMenuStrip = contextMenuStrip1;
                     tr.ToolTipText = date + " (" + (size) + ")";
@@ -80,7 +81,8 @@ namespace IPCamera
         {
             var a = new string[] { "KB", "MB", "GB", "TB", "PB" };
             int pos = 0;
-            while (size >= 1024) {
+            while (size >= 1024)
+            {
                 size /= 1024;
                 pos++;
             }
@@ -129,7 +131,7 @@ namespace IPCamera
 
                     FileTreeNode tr = new FileTreeNode(path, GetServer(startpath + "" + path), FileTreeNode.TypeNode.Directory, startpath + "" + path);
                     tr.ToolTipText = date + " (" + size + ")";
-                    tr.ContextMenuStrip = contextMenuStrip1;                    
+                    tr.ContextMenuStrip = contextMenuStrip1;
                     treeView1.Nodes.Add(tr);
                 }
             }
@@ -287,7 +289,7 @@ namespace IPCamera
             sending.Add("cmd", "setplanrecattr");
             sending.Add("cururl", "http://" + setting.URLToHTTPPort + "web/record.html");
             sending.Add("-planrec_enable", checkBox1.Checked ? "1" : "0");
-            sending.Add("-planrec_chn", comboBox1.SelectedIndex == 0 ? "11": "12");
+            sending.Add("-planrec_chn", comboBox1.SelectedIndex == 0 ? "11" : "12");
             sending.Add("-planrec_time", numericUpDown1.Value.ToString());
             sending.Add("-planrec_type", "1");
 
@@ -301,7 +303,7 @@ namespace IPCamera
 
         private string TimeSpanToString(TimeSpan ts)
         {
-            if(ts.Days == 0)
+            if (ts.Days == 0)
                 return String.Format("{0}:{1}:{2}", ts.Hours, ts.Minutes, ts.Seconds);
             else
                 return String.Format("{0} days {1}:{2}:{3}", ts.Days, ts.Hours, ts.Minutes, ts.Seconds);
@@ -312,9 +314,9 @@ namespace IPCamera
             TimeSpan tp = (TimeSpan)e.Argument;
             while (true)
             {
-                tp = tp.Add(new TimeSpan(0,0,1));
+                tp = tp.Add(new TimeSpan(0, 0, 1));
 
-                if(label6.InvokeRequired)
+                if (label6.InvokeRequired)
                     label6?.Invoke(new Action(() =>
                     {
                         label6.Text = "Камера работает: " + TimeSpanToString(tp);
@@ -325,7 +327,7 @@ namespace IPCamera
         }
 
         private void button4_Click(object sender, EventArgs e)
-        {            
+        {
             FolderBrowserDialog fd = new FolderBrowserDialog();
             fd.Description = "Папка для загрузки файлов";
 
@@ -374,6 +376,20 @@ namespace IPCamera
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             selected = (FileTreeNode)e.Node;
+        }
+        //bool IsPlay = false;
+        private void смотретьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.InternetCache) + "\\" + "VideoFile.264";
+            if (selected == null) return;
+            progressBar1.Maximum = 0;
+            progressBar1.Value = 0;
+            progressBar1.Style = ProgressBarStyle.Blocks;
+            Sizefiles.Clear();
+            
+            progressBar1.Maximum += 100;
+            BtnDownload(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + selected.URL, path);
+            
         }
     }
 }

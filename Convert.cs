@@ -14,8 +14,12 @@ namespace IPCamera
 {
     public partial class Convert : Form
     {
-        public const string PFfmpeg = "-r {0} -i {1} -i {2} -acodec copy -vcodec copy {3}"; //-vcodec copy
-        public const string PFfmpegR = "-i {0} -i {1} -c:v libx264 -minrate 2M -maxrate 2M -b:v 2M -pix_fmt yuv420p -r 16 {2}"; //Раcширенное
+        public const string PFfmpeg = "-r {0} -i {1} -i {2} -acodec copy -vcodec copy {3}"; //-vcodec copy CBR
+        public const string PFfmpegVBR = " -i {1} -i {2} -acodec copy -vcodec copy {3}"; //-vcodec copy VBR
+
+        public const string PFfmpegR = "-i {0} -i {1} -c:v libx264 -minrate 2M -maxrate 2M -b:v 2M -pix_fmt yuv420p -r 16 {2}"; //Раcширенное CBR
+        public const string PFfmpegRVBR = "-i {0} -i {1} -c:v libx264 -minrate 2M -maxrate 2M -b:v 2M -pix_fmt yuv420p {2}"; //Раcширенное VBR
+
 
         public const string ffmpeg = "ffmpeg.exe";
         public const string converter = "convert.exe";
@@ -23,8 +27,7 @@ namespace IPCamera
 
         string Final = null;
         decimal FPS;
-
-        List<string> Files = new List<string>();
+        readonly List<string> Files = new List<string>();
         public Convert()
         {
             InitializeComponent();
@@ -58,22 +61,6 @@ namespace IPCamera
             if (Final == null)
                 Final = Path.GetDirectoryName(path264);
 
-            /*Console.WriteLine(PFfmpeg, FPS.ToString().Replace(',','.'),
-                "\"" + path264 + ".mp4" + "\"",
-                "\"" + path264 + ".wav" + "\"",
-                "\"" + Final + "\\" + pathname + "_ff.mkv" + "\"");*/
-
-            var p1 = new Process(); //запуск конвертера
-            p1.StartInfo = new ProcessStartInfo(converter, path);           
-            p1.StartInfo.UseShellExecute = false;
-            p1.StartInfo.CreateNoWindow = true;
-            p1.Start();
-
-            PlusPB();
-
-            while (!p1.HasExited) ;
-            PlusPB();
-           
             if (File.Exists(Final + "\\" + pathname + "_ff.mkv"))
             {
                 MessageBox.Show("Файл уже существует. Удалите файл и повторите попытку позднее");
@@ -81,26 +68,49 @@ namespace IPCamera
                 return;
             }
 
+            /*Console.WriteLine(PFfmpeg, FPS.ToString().Replace(',','.'),
+                "\"" + path264 + ".mp4" + "\"",
+                "\"" + path264 + ".wav" + "\"",
+                "\"" + Final + "\\" + pathname + "_ff.mkv" + "\"");*/
+
+            var p1 = new Process
+            {
+                StartInfo = new ProcessStartInfo(converter, path)
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            }; //запуск конвертера
+            p1.Start();
+
+            PlusPB();
+
+            while (!p1.HasExited) ;
+            PlusPB();                    
+
             var p2 = new Process(); //запуск конвертера
+            p2.StartInfo.FileName = ffmpeg;
             if (!RazhConv)
             {
-                p2.StartInfo = new ProcessStartInfo(ffmpeg, String.Format(PFfmpeg, //Запуск фмпега 
+                p2.StartInfo.Arguments = String.Format(IsVBR1 ? PFfmpegVBR : PFfmpeg, //Запуск фмпега 
                     FPS.ToString().Replace(',', '.'),
                     "\"" + path264 + ".mp4" + "\"",
                     "\"" + path264 + ".wav" + "\"",
                     "\"" + Final + "\\" + pathname + "_ff.mkv" + "\""
-                    ));
+                    );
                 p2.StartInfo.UseShellExecute = false;
                 p2.StartInfo.CreateNoWindow = true;
             }
             else
-                p2.StartInfo = new ProcessStartInfo(ffmpeg, String.Format(PFfmpegR, //Запуск фмпега 
+            {
+                p2.StartInfo.Arguments = String.Format(IsVBR1 ? PFfmpegRVBR : PFfmpegR, //Запуск фмпега 
                     "\"" + path264 + ".mp4" + "\"",
                     "\"" + path264 + ".wav" + "\"",
                     "\"" + Final + "\\" + pathname + "_ff.mkv" + "\""
-                    ));
-            //p2.StartInfo.UseShellExecute = false;
-            //p2.StartInfo.CreateNoWindow = true;
+                    );
+                //p2.StartInfo.UseShellExecute = false;
+                //p2.StartInfo.CreateNoWindow = true;
+            }
             p2.Start();
             PlusPB();
 
@@ -113,6 +123,8 @@ namespace IPCamera
                 File.Delete(path264 + ".wav");
             }
             catch { }
+
+            if(IsPlay) Process.Start("ffplay.exe", checkedListBox1.Items[Selected] + "_ff.mkv -x 640 -y 360");
         }
 
         private void GetFiles(string directory)
@@ -145,6 +157,7 @@ namespace IPCamera
                 }
             }
         }
+        /*
         private void GetFile(string file)
         {
             if (!Files.Contains(file))
@@ -153,7 +166,7 @@ namespace IPCamera
                 checkedListBox1.Items.Add(file);
             }
         }
-
+        */
         private void Convert_Load(object sender, EventArgs e)
         {
 
@@ -161,8 +174,10 @@ namespace IPCamera
 
         private void button1_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = "Открыть папку с .h264 видео";
+            FolderBrowserDialog fbd = new FolderBrowserDialog
+            {
+                Description = "Открыть папку с .h264 видео"
+            };
 
             if (fbd.ShowDialog() == DialogResult.OK)
                 GetFiles(fbd.SelectedPath);
@@ -170,9 +185,11 @@ namespace IPCamera
 
         private void button2_Click(object sender, EventArgs e)
         {
-            OpenFileDialog opg = new OpenFileDialog();
-            opg.Filter = "Файлы .h264|*.h264";
-            opg.Multiselect = true;
+            OpenFileDialog opg = new OpenFileDialog
+            {
+                Filter = "Файлы .h264|*.h264",
+                Multiselect = true
+            };
 
             if (opg.ShowDialog() == DialogResult.OK)
                 GetFiles(opg.FileNames);
@@ -213,9 +230,11 @@ namespace IPCamera
 
         private void button5_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = "Открыть папку для конечных видео";
-            fbd.SelectedPath = Final;
+            FolderBrowserDialog fbd = new FolderBrowserDialog
+            {
+                Description = "Открыть папку для конечных видео",
+                SelectedPath = Final
+            };
 
             if (fbd.ShowDialog() == DialogResult.OK)
                 Final = fbd.SelectedPath;
@@ -228,9 +247,11 @@ namespace IPCamera
 
         private void button6_Click(object sender, EventArgs e)
         {
-            OpenFileDialog opg = new OpenFileDialog();
-            opg.Filter = "Файлы .db|*.db";
-            opg.Multiselect = true;
+            OpenFileDialog opg = new OpenFileDialog
+            {
+                Filter = "Файлы .db|*.db",
+                Multiselect = true
+            };
 
             if (opg.ShowDialog() == DialogResult.OK)
                 Process.Start(dbreader, opg.FileName);
@@ -254,6 +275,51 @@ namespace IPCamera
         {
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
                 checkedListBox1.SetItemChecked(i, false);
+        }
+
+        int Selected = 0;
+
+        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Selected = checkedListBox1.SelectedIndex;
+        }
+        bool IsPlay = false;
+
+        public bool IsVBR1 { get; set; } = true;
+
+        private void конвертироватьИВоспроизвестиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<string> SelctedFile = new List<string>
+            {
+                checkedListBox1.Items[Selected].ToString()
+            };
+
+            progressBar1.Value = 0;
+            progressBar1.Maximum = SelctedFile.Count * 4;
+
+            foreach (var item in SelctedFile.ToArray())
+            {
+                ConvertStart(item);
+                button3.Enabled = false;
+            }
+            button3.Enabled = true;
+            toolStripStatusLabel1.Text = "Конвертирование запущенно";
+
+            IsPlay = true;           
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            IsVBR1 = true;
+            label1.Visible = false;
+            numericUpDown1.Visible = false;
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            IsVBR1 = false;
+            label1.Visible = true;
+            numericUpDown1.Visible = true;
         }
     }
 }

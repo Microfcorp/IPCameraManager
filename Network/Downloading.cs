@@ -28,6 +28,22 @@ namespace IPCamera.Network
             }
             return dict;
         }
+        public static Dictionary<string, string> GetImageParams(string ip, string login, string password)
+        {
+            var resp = GetHTML(DownloadingPaths.ToPath(ip) + DownloadingPaths.ImageParam, login, password);
+            var split = resp.Split('\n');
+            var dict = new Dictionary<string, string>();
+
+            foreach (var item in split.Where(x => x.Length > 3))
+            {
+                //var model="C9F0SgZ3N0P8L0";
+                var items = item.Substring(4);
+                var name = items.Split('=')[0];
+                var value = items.Split('=')[1].Replace("\"", "").Replace(";", "").Trim(' ', '\r', '\n');
+                dict.Add(name, value);
+            }
+            return dict;
+        }
 
         public static Dictionary<string, string> GetTimeRecordParams(string ip, string login, string password)
         {
@@ -132,6 +148,7 @@ namespace IPCamera.Network
         public const string LogFile = "log/syslog.txt";
         public const string TimeRecord = "web/cgi-bin/hi3510/param.cgi?cmd=getlanguage&cmd=getplanrecattr&cmd=getscheduleex&-ename=plan";
         public const string SendCGI = "web/cgi-bin/hi3510/param.cgi";
+        public const string ImageParam = "web/cgi-bin/hi3510/param.cgi?cmd=getlanguage&cmd=getimageattr&cmd=getsetupflag&cmd=getimagemaxsize&cmd=getaudioflag&cmd=getserverinfo&cmd=getvideoattr&cmd=getircutattr&cmd=getinfrared&cmd=getrtmpattr&cmd=getlampattrex";
 
         public static string ToPath(string IP)
         {
