@@ -14,8 +14,10 @@ namespace IPCamera.GroupV
         readonly Settings.Structures[] set = Settings.Structures.Load();
         readonly SortedList<string, PictureBox> PanelCameras = new SortedList<string, PictureBox>();
         readonly SortedList<string, float> PanelCamerasScale = new SortedList<string, float>();
+        readonly List<string> CameraIP = new List<string>();
 
         bool IsAutoOrient = true;
+        private Point lastPoint;
 
         public int SizeSET
         {
@@ -39,7 +41,7 @@ namespace IPCamera.GroupV
             }
         }
 
-        [Obsolete]
+
         public void ResizeF()
         {
             flowLayoutPanel1.SuspendLayout();
@@ -52,13 +54,25 @@ namespace IPCamera.GroupV
                     PanelCameras.Add(set[i].IP + i, new PictureBox());
                     PanelCamerasScale.Add(set[i].IP + i, 1f);
                     PanelCameras[set[i].IP + i].SizeMode = PictureBoxSizeMode.Zoom;
-                    PanelCameras[set[i].IP + i].ImageLocation = set[i].GetPhotoStream;
+                    //PanelCameras[set[i].IP + i].ImageLocation = Network.Downloading.GetImageWitchAutorized(set[i].GetPhotoStreamSecondONVIF, set[i].Login, set[i].Password);
+                    CameraIP.Add(set[i].GetPhotoStreamSecondONVIF, true);
                     //PanelCameras[set[i].IP + i].DragDrop += (o, e) => { Console.WriteLine(e.X); };
                     //PanelCameras[set[i].IP + i].DragEnter += (o, e) => { e.Effect = DragDropEffects.Copy; };
-                    //PanelCameras[set[i].IP + i].MouseMove += (o, e) => { if (e.Button != MouseButtons.Left) return; (o as PictureBox).DoDragDrop(o, DragDropEffects.All); };
+                    var ia = i;
+                    PanelCameras[set[i].IP + i].MouseMove += (o, e) => 
+                    { 
+                        if (e.Button != MouseButtons.Left) return;
+
+                        var PTZ = new ONVIF.PTZ.PTZController(set[ia]);
+
+                        var dx = e.Location.X - lastPoint.X;
+                        var dy = e.Location.Y - lastPoint.Y;
+                        _ = (Math.Abs(dy) > Math.Abs(dx) ? dy > 0 ? PTZ.Move(ONVIF.PTZ.PTZParameters.Vector.DOWN) : PTZ.Move(ONVIF.PTZ.PTZParameters.Vector.UP) : dx > 0 ? PTZ.Move(ONVIF.PTZ.PTZParameters.Vector.RIGHT) : PTZ.Move(ONVIF.PTZ.PTZParameters.Vector.LEFT));
+                        lastPoint = e.Location;
+                    };
                     //PanelCameras[set[i].IP + i].MouseClick += (o, e) => { (o as PictureBox).Focus(); };
                     //var ia = i;
-                    //PanelCameras[set[i].IP + i].MouseWheel += (o, e) => { Console.WriteLine(e.Delta / SystemInformation.MouseWheelScrollDelta); if (e.Delta / SystemInformation.MouseWheelScrollDelta > 0) PanelCamerasScale[set[ia].IP + ia]++; else if (e.Delta / SystemInformation.MouseWheelScrollDelta < 0) PanelCamerasScale[set[ia].IP + ia]--; var s = new Point((int)PanelCamerasScale[set[ia].IP + ia], (int)PanelCamerasScale[set[ia].IP + ia]); (o as PictureBox).Image.Resize(new Size(s)); };
+                    PanelCameras[set[i].IP + i].MouseWheel += (o, e) => { var PTZ = new ONVIF.PTZ.PTZController(set[ia]); PTZ.MoveToHome(); };
                     //PanelCameras[set[i].IP + i]. += (o, e) => { if (e.Button != MouseButtons.Left) return; Console.WriteLine(e.Delta); if (e.Delta > 0) PanelCamerasScale[set[ia].IP + ia]++; else if (e.Delta < 0) PanelCamerasScale[set[ia].IP + ia]--; (o as PictureBox).Scale((int)PanelCamerasScale[set[ia].IP + ia]); };
                     PanelCameras[set[i].IP + i].DoubleClick += (o, e) =>
                     {
@@ -77,13 +91,18 @@ namespace IPCamera.GroupV
         private void Photo_Load(object sender, EventArgs e)
         {
             ResizeF();
-        }
+        }        
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            foreach (var item in PanelCameras.Values)
+            /*foreach (var item in PanelCameras.Values)
             {
                 item.ImageLocation = item.ImageLocation;
+            }*/
+            for (int i = 0; i < PanelCameras.Count; i++)
+            {
+                if (set[i].TypeCamera == Network.Network.TypeCamera.Other) PanelCameras.ElementAt(i).Value.Image = Network.Downloading.GetImageWitchAutorized(CameraIP[i], set[i].Login, set[i].Password);
+                else PanelCameras.ElementAt(i).Value.ImageLocation = set[i].GetPhotoStream;
             }
         }
 

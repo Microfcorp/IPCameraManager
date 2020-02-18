@@ -37,7 +37,7 @@ namespace IPCamera.CV
 
             p = set.ZoneDetect;
 
-            md = new MootionDetect(String.Format(Network.Network.RTSP, set.Name, set.Password, set.IP, set.RTSPPort, ((int)Network.RTSPStream.Second_Stream).ToString()));
+            md = new MootionDetect(set.GetRTSPSecondONVIF);
             //md = new MootionDetect("C:\\Users\\Лехап\\Desktop\\Барсик\\P191202_170012_171018.264.h264_ff.mp4");
             md.OnMD += (long s, Mat image, long m) => { im.Image = image; if (s != default(double)) { Detect(s); Detects = s; } };
 
