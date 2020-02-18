@@ -67,14 +67,20 @@
     <Reference Include="Emgu.CV.World, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.4.1.1.3497\lib\net35\Emgu.CV.World.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.11.17.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.11.17\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.18.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.18\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="QRCoder, Version=1.3.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.3.6\lib\net40\QRCoder.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Discovery" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -94,6 +100,40 @@
     </Compile>
     <Compile Include="AlwaysVisible.Designer.cs">
       <DependentUpon>AlwaysVisible.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraSettings\BrowserPOPUP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraSettings\BrowserPOPUP.Designer.cs">
+      <DependentUpon>BrowserPOPUP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraSettings\Email.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraSettings\Email.Designer.cs">
+      <DependentUpon>Email.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraSettings\OSD.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraSettings\OSD.Designer.cs">
+      <DependentUpon>OSD.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CameraSettings\P2PCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraSettings\P2PCode.Designer.cs">
+      <DependentUpon>P2PCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\OPTZ\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\ServiceReference1\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Convert.cs">
       <SubType>Form</SubType>
@@ -151,10 +191,10 @@
     <Compile Include="ImageV.Designer.cs">
       <DependentUpon>ImageV.cs</DependentUpon>
     </Compile>
-    <Compile Include="IR.cs">
+    <Compile Include="CameraSettings\IR.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IR.Designer.cs">
+    <Compile Include="CameraSettings\IR.Designer.cs">
       <DependentUpon>IR.cs</DependentUpon>
     </Compile>
     <Compile Include="LogView.cs">
@@ -175,6 +215,9 @@
     <Compile Include="Network\WebDownload.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ONVIF\ONVIFCamera.cs" />
+    <Compile Include="ONVIF\PTZ\PTZController.cs" />
+    <Compile Include="ONVIF\SendResponce.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -202,14 +245,37 @@
     <Compile Include="Settings\Records.cs" />
     <Compile Include="Settings\Structures.cs" />
     <Compile Include="StringMaster.cs" />
+    <Compile Include="VievImage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VievImage.Designer.cs">
+      <DependentUpon>VievImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Visible.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Visible.Designer.cs">
       <DependentUpon>Visible.cs</DependentUpon>
     </Compile>
+    <Compile Include="Web References\org.onvif.www\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AlwaysVisible.resx">
       <DependentUpon>AlwaysVisible.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraSettings\BrowserPOPUP.resx">
+      <DependentUpon>BrowserPOPUP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraSettings\Email.resx">
+      <DependentUpon>Email.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraSettings\OSD.resx">
+      <DependentUpon>OSD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraSettings\P2PCode.resx">
+      <DependentUpon>P2PCode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Convert.resx">
       <DependentUpon>Convert.cs</DependentUpon>
@@ -232,7 +298,7 @@
     <EmbeddedResource Include="ImageV.resx">
       <DependentUpon>ImageV.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IR.resx">
+    <EmbeddedResource Include="CameraSettings\IR.resx">
       <DependentUpon>IR.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LogView.resx">
@@ -252,6 +318,9 @@
     <EmbeddedResource Include="Record\VisibleRecord.resx">
       <DependentUpon>VisibleRecord.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VievImage.resx">
+      <DependentUpon>VievImage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Visible.resx">
       <DependentUpon>Visible.cs</DependentUpon>
     </EmbeddedResource>
@@ -259,7 +328,166 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="app.config" />
+    <None Include="Connected Services\OPTZ\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.PresetTour.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.PTZConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.PTZConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.PTZNode.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.PTZPreset.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.PTZPresetTourOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\IPCamera.OPTZ.PTZStatus.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OPTZ\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\onvif.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\PTZService.wsdl" />
+    <None Include="Connected Services\OPTZ\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OPTZ\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioDecoderConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioDecoderConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioEncoderConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioEncoderConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioOutput.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioOutputConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioOutputConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioSource.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioSourceConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.AudioSourceConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.MediaUri.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.MetadataConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.MetadataConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.OSDConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.OSDConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.Profile.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.VideoAnalyticsConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.VideoEncoderConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.VideoEncoderConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.VideoSource.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.VideoSourceConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.VideoSourceConfigurationOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\IPCamera.ServiceReference1.VideoSourceMode.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\media.wsdl" />
+    <None Include="Connected Services\ServiceReference1\onvif.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReference1\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\System.Xml.XmlElement.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -269,10 +497,130 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Web References\org.onvif.www\AudioDecoderConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioDecoderConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioEncoderConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioEncoderConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioOutput.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioOutputConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioOutputConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioSource.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioSourceConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\AudioSourceConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\Capabilities.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\media.wsdl" />
+    <None Include="Web References\org.onvif.www\MediaUri.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\MetadataConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\MetadataConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\onvif.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\OSDConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\OSDConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\Profile.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\org.onvif.www\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\VideoAnalyticsConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\VideoEncoderConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\VideoEncoderConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\VideoSource.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\VideoSourceConfiguration.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\VideoSourceConfigurationOptions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\VideoSourceMode.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\org.onvif.www\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\org.onvif.www\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="camera.ico" />
+    <None Include="Connected Services\ServiceReference1\configuration91.svcinfo" />
+    <None Include="Connected Services\ServiceReference1\configuration.svcinfo" />
+    <None Include="Connected Services\ServiceReference1\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\OPTZ\configuration91.svcinfo" />
+    <None Include="Connected Services\OPTZ\configuration.svcinfo" />
+    <None Include="Connected Services\OPTZ\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="Network\ExampleResponce.html" />
+    <None Include="Resources\camera.bmp" />
     <None Include="Resources\record.png" />
     <None Include="Resources\ov.ico" />
     <None Include="Resources\of.ico" />
@@ -308,6 +656,31 @@
       <Project>{3b4d91e8-c743-4493-8f4a-526a7479e0ed}</Project>
       <Name>RecordDB</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="https://www.onvif.org/onvif/ver10/media/wsdl/media.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\org.onvif.www\</RelPath>
+      <UpdateFromURL>https://www.onvif.org/onvif/ver10/media/wsdl/media.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>
+      </CachedAppSettingsObjectName>
+      <CachedSettingsPropName>
+      </CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\OPTZ\" />
+    <WCFMetadataStorage Include="Connected Services\ServiceReference1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\EMGU.CV.4.1.1.3497\build\EMGU.CV.targets" Condition="Exists('..\packages\EMGU.CV.4.1.1.3497\build\EMGU.CV.targets')" />

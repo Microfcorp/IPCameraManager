@@ -18,6 +18,14 @@ namespace IPCamera.Record
             set;
         }
         /// <summary>
+        /// Остановлена ли запись вручную
+        /// </summary>
+        public bool IsStop
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// Дискрептор записи
         /// </summary>
         public IntPtr Handler

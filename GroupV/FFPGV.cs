@@ -45,7 +45,7 @@ namespace IPCamera.GroupV
         {
             var s = new Process();
             s.StartInfo.FileName = "ffplay.exe"; //-nodisp -vn -autoexit
-            s.StartInfo.Arguments = String.Format("-noborder " + Setting.GetRTSPSecond)
+            s.StartInfo.Arguments = String.Format("-noborder " + Setting.GetRTSPSecondONVIF)
                 + " -x 640 -y 360";
             s.StartInfo.UseShellExecute = false;
             s.StartInfo.CreateNoWindow = true;

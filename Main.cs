@@ -73,13 +73,25 @@ namespace IPCamera
                 numericUpDown2.Value = value;
             }
         }
+        private uint ONVIFPort
+        {
+            get
+            {
+                return (uint)numericUpDown3.Value;
+            }
+            set
+            {
+                numericUpDown3.Value = value;
+            }
+        }
 
         public Network.Network.TypeCamera GetTypeCamera
         {
             get
             {
                 if (radioButton1.Checked) return Network.Network.TypeCamera.HI3510;
-                else return Network.Network.TypeCamera.HI3518;
+                else if (radioButton2.Checked) return Network.Network.TypeCamera.HI3518;
+                else return Network.Network.TypeCamera.Other;
             }
             set
             {
@@ -92,7 +104,8 @@ namespace IPCamera
                 }
                 else
                 {
-                    radioButton2.Checked = true;
+                    if (value == Network.Network.TypeCamera.Other) radioButton3.Checked = true;
+                    if (value == Network.Network.TypeCamera.HI3518) radioButton2.Checked = true;
                     загрузкаФайловToolStripMenuItem.Visible = false;
                     логиToolStripMenuItem.Visible = false;
                     настройкиИзображенияToolStripMenuItem.Visible = false;
@@ -102,6 +115,7 @@ namespace IPCamera
         }
 
         List<ToolStripMenuItem> Items = new List<ToolStripMenuItem>();
+        SortedList<string, int> ONVIFPORTS = new SortedList<string, int>();
 
         private uint _selected = 0;
 
@@ -111,19 +125,21 @@ namespace IPCamera
             set
             {
                 _selected = value;
-
+                if (value >= Structures.Load().Length) return;
                 var structures = Structures.Load()[value];
                 IP = structures.IP;
                 UserName = structures.Name;
                 Password = structures.Password;
                 HTTPPort = structures.HTTPPort;
                 RTSPPort = structures.RTSPPort;
+                ONVIFPort = structures.ONVIFPort;
                 GetTypeCamera = structures.TypeCamera;
 
                 Items.Where(tmp => tmp.Name == value.ToString()).ToList().ForEach(tmp => tmp.Checked = true);
                 Items.Where(tmp => tmp.Name != value.ToString()).ToList().ForEach(tmp => tmp.Checked = false);
                 Network.Network.TypeCurentCamera = Structures.Load()[value].TypeCamera;
                 текущаяКамераToolStripMenuItem.Text = "Текущая камера (" + structures.IP + ") - " + (Items.Count > 0 ? (Items.Where(tmp => tmp.Text.Contains(structures.IP)).ToArray().First().Text.Contains("Не доступен") ? "Не доступен" : "Доступен") : "");
+                UpdatePotoks(structures);
             }
         }
 
@@ -131,17 +147,21 @@ namespace IPCamera
         {
             InitializeComponent();
             Selected = 0;
+            System.Net.ServicePointManager.Expect100Continue = false;
+            System.Net.ServicePointManager.UseNagleAlgorithm = false;
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
             UpdateStructures();
+            if (Selected >= Structures.Load().Length) return;
             var structures = Structures.Load()[Selected];
             IP = structures.IP;
             UserName = structures.Name;
             Password = structures.Password;
             HTTPPort = structures.HTTPPort;
             RTSPPort = structures.RTSPPort;
+            ONVIFPort = structures.ONVIFPort;
             Items[(int)Selected].Checked = true;
             GetTypeCamera = structures.TypeCamera;
 
@@ -153,10 +173,57 @@ namespace IPCamera
             var records = Structures.Load().Where(tmp => tmp.Records.AutoLoad == Settings.Record.AutoEnabmle.ON);
             for (int i = 0; i < records.Count(); i++)
                 StartRecord(i);
+
+            //Console.WriteLine(ONVIF.SendResponce.GetVideoResolution(structures.GetONVIF, structures.Name, structures.Password));
+           // Console.WriteLine(ONVIF.SendResponce.GetPTZ(structures.GetONVIF, structures.Name, structures.Password));
         }
         private void ChangeSelected(object sender, EventArgs e)
         {
             Selected = uint.Parse((sender as ToolStripMenuItem).Name);            
+        }
+
+        private void UpdatePotoks(Structures str)
+        {
+            //if (!str.GetONVIFController.IsSupported) return;
+
+            первичныйToolStripMenuItem.DropDownItems.Clear();
+            вторичныйToolStripMenuItem.DropDownItems.Clear();          
+            
+            var pr = ONVIF.SendResponce.GetProfiles(str);
+
+            for (int i = 0; i < pr.Length; i++)
+            {
+                var raz = " (" + pr[i].VideoEncoderConfiguration.Resolution.Width + "x" + pr[i].VideoEncoderConfiguration.Resolution.Height + ")";
+                ToolStripMenuItem tm = new ToolStripMenuItem(i + " - " + pr[i].Name.Trim('"') + raz, null, StreamFSelected, i.ToString())
+                {
+                    Checked = str.SelectFirstProfile == i,
+                };
+                первичныйToolStripMenuItem.DropDownItems.Add(tm);
+
+                ToolStripMenuItem tm1 = new ToolStripMenuItem(i + " - " + pr[i].Name.Trim('"') + raz, null, StreamSSelected, i.ToString())
+                {
+                    Checked = str.SelectSecondProfile == i,
+                };
+                вторичныйToolStripMenuItem.DropDownItems.Add(tm1);
+            }            
+        }
+        private void StreamFSelected(object sender, EventArgs e)
+        {
+            var structur = Structures.Load();
+            structur[Selected].SelectFirstProfile = int.Parse((sender as ToolStripMenuItem).Name);
+            Structures.Save(structur);
+            foreach (var tmp in первичныйToolStripMenuItem.DropDownItems)
+                (tmp as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;           
+        }
+        private void StreamSSelected(object sender, EventArgs e)
+        {
+            var structur = Structures.Load();
+            structur[Selected].SelectSecondProfile = int.Parse((sender as ToolStripMenuItem).Name);
+            Structures.Save(structur);
+            foreach (var tmp in вторичныйToolStripMenuItem.DropDownItems)
+                (tmp as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
         }
 
         private void AddAdd()
@@ -172,9 +239,12 @@ namespace IPCamera
             var structur = Structures.Load();
             for (int i = 0; i < structur.Length; i++)
             {
-                var dostup = Network.Ping.IsOKServer(structur[i].GetHTTP, structur[i].Name, structur[i].Password) ? " (Доступен)" : " (Не доступен)";
+                var dostup = structur[i].IsActive ? " (Доступен)" : " (Не доступен)";
                 ToolStripMenuItem tm = new ToolStripMenuItem(structur[i].IP + dostup, null, ChangeSelected, i.ToString());
                 tm.Checked = false;
+                bool isptz = (new ONVIF.PTZ.PTZController(structur[i]).IsSuported);
+                tm.BackColor = isptz ? Color.LightCyan : Color.Transparent;
+                tm.Text += isptz ? " (PTZ)" : "";
                 Items.Add(tm);               
             }           
             AddAdd();
@@ -222,7 +292,10 @@ namespace IPCamera
             try
             {
                 for (int i = 0; i < e.EndpointDiscoveryMetadata.ListenUris.Count; i++)
+                {
                     comboBox1.Invoke(new Action(() => { if (!comboBox1.Items.Contains(e.EndpointDiscoveryMetadata.ListenUris[i].Host)) comboBox1.Items.Add(e.EndpointDiscoveryMetadata.ListenUris[i].Host); }));
+                    ONVIFPORTS.Add(e.EndpointDiscoveryMetadata.ListenUris[i].Host, e.EndpointDiscoveryMetadata.ListenUris[i].Port, true);
+                }
             }
             catch { }
         }
@@ -232,7 +305,7 @@ namespace IPCamera
             panel1.Visible = false;
             panel3.Visible = true;
             var structures = Structures.Load();
-            structures[Selected] = new Structures(IP, UserName, Password, HTTPPort, RTSPPort, Structures.Load()[Selected].ValueMD, Structures.Load()[Selected].ZoneDetect, GetTypeCamera, Structures.Load()[Selected].Records);
+            structures[Selected] = new Structures(IP, UserName, Password, HTTPPort, RTSPPort, ONVIFPort, Structures.Load()[Selected].SelectFirstProfile, Structures.Load()[Selected].SelectSecondProfile, Structures.Load()[Selected].ValueMD, Structures.Load()[Selected].ZoneDetect, GetTypeCamera, Structures.Load()[Selected].Records);
             Structures.Save(structures);
             UpdateStructures();
             Selected = Selected;
@@ -279,10 +352,10 @@ namespace IPCamera
             var m3u = "#EXTM3U" + Environment.NewLine;
             m3u += Environment.NewLine;
             m3u += "#EXTINF:-1, IPCamera - Second is " + structures.IP + Environment.NewLine;
-            m3u += structures.GetRTSPSecond + Environment.NewLine;
+            m3u += structures.GetRTSPSecondONVIF + Environment.NewLine;
             m3u += Environment.NewLine;
             m3u += "#EXTINF:-1, IPCamera - First is " + structures.IP + Environment.NewLine;
-            m3u += structures.GetRTSPFirst;
+            m3u += structures.GetRTSPFirstONVIF;
 
             SaveFileDialog svf = new SaveFileDialog
             {
@@ -354,10 +427,10 @@ namespace IPCamera
             {
                 m3u += Environment.NewLine;
                 m3u += "#EXTINF:-1, IPCamera - Second is " + structures.IP + Environment.NewLine;
-                m3u += structures.GetRTSPSecond + Environment.NewLine;
+                m3u += structures.GetRTSPSecondONVIF + Environment.NewLine;
                 m3u += Environment.NewLine;
                 m3u += "#EXTINF:-1, IPCamera - First is " + structures.IP + Environment.NewLine;
-                m3u += structures.GetRTSPFirst;
+                m3u += structures.GetRTSPFirstONVIF;
                 m3u += Environment.NewLine;
             }
             SaveFileDialog svf = new SaveFileDialog
@@ -441,8 +514,7 @@ namespace IPCamera
 
         private void настройкиИзображенияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            IR cnv = new IR(Selected);
-            cnv.Show();
+            
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -469,11 +541,17 @@ namespace IPCamera
         private void StartRecord(int ID)
         {
             if (Structures.Load()[ID].Records.Enamble == Settings.Record.RecEnamble.OFF || !Structures.Load()[ID].IsActive) return;
+            if (Structures.Load()[ID].Records.Enamble == Settings.Record.RecEnamble.OFF && Structures.Load()[ID].IsActive) StopRecord(ID, false);
 
-            if(!Records.ContainsKey(ID))
+            if (!Records.ContainsKey(ID))
                 Records.Add(ID, Record.RecordStarting.StartRecord((uint)ID, ID));
 
-            if(!Records[ID].IsRunning) Records[ID] = Record.RecordStarting.StartRecord((uint)ID, ID);
+            if (Records[ID].IsStop) return;
+
+            if (!Records[ID].IsRunning) 
+            { 
+                Records[ID] = Record.RecordStarting.StartRecord((uint)ID, ID);                
+            }
 
             Records[ID].Exited += (o, es) => { Items[(o as Record.RecordParameters).ID].Image = null; };
             if (Records[ID].IsRunning)
@@ -482,16 +560,15 @@ namespace IPCamera
                 Record.RemoveFiles.RemoveOLDFiles(ID);
             }
         }
-        private void StopRecord(int ID, bool IsTryEnable = true)
+        private void StopRecord(int ID, bool IsNonEnable = true)
         {
             if (!Records.ContainsKey(ID)) return;
-            if (!Records[ID].IsRunning) return;
 
             if (Records[ID].IsRunning)
             {
                 Items.Where(tmp => tmp.Name == ID.ToString()).ToArray()[0].Image = null;
                 Records[ID].Close();
-                if (IsTryEnable) Records[ID].IsRunning = true;
+                if (IsNonEnable) Records[ID].IsStop = true;
             }
         }
         private SortedList<int, Record.RecordParameters> Records = new SortedList<int, Record.RecordParameters>();
@@ -510,6 +587,7 @@ namespace IPCamera
 
         private void начатьЗаписьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Records.Values.ToList().ForEach(tmp => tmp.IsStop = false);
             timer1_Tick(null, null);
             timer1.Start();
         }
@@ -520,15 +598,14 @@ namespace IPCamera
 
             for (int i = 0; i < structuress.Length; i++)
             {
-                StopRecord(i, false);
+                StopRecord(i, true);
             }
             MessageBox.Show("Все записи остановлены");
         }
 
         private void просмотрЗаписиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Record.VisibleRecord cnv = new Record.VisibleRecord(Selected);
-            cnv.Show();
+            
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -542,6 +619,64 @@ namespace IPCamera
         {
             AlwaysVisible cnv = new AlwaysVisible(Selected);
             cnv.Show();
+        }
+
+        private void настройкиИзображенияToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            IR cnv = new IR(Selected);
+            cnv.Show();
+        }
+
+        private void найстройкаOSDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CameraSettings.OSD cnv = new CameraSettings.OSD(Selected);
+            cnv.Show();
+        }
+
+        private void получитьP2PКодToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CameraSettings.P2PCode cnv = new CameraSettings.P2PCode(Selected);
+            cnv.ShowDialog();
+        }
+
+        private void emailToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CameraSettings.Email cnv = new CameraSettings.Email(Selected);
+            cnv.ShowDialog();
+        }
+
+        private void начатьЗаписьToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if(Records.Any()) Records.Where(tmp => tmp.Value.ID == (int)Selected).FirstOrDefault().Value.IsStop = false;
+            StartRecord((int)Selected);
+        }
+
+        private void остановитьЗаписьToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            StopRecord((int)Selected, true);
+        }
+
+        private void просмотрЗаписейToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Record.VisibleRecord cnv = new Record.VisibleRecord(Selected);
+            cnv.Show();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ONVIFPORTS.ContainsKey(comboBox1.Text))
+                numericUpDown3.Value = ONVIFPORTS[comboBox1.Text];
+        }
+
+        private void определитьПоддержкуPTZToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Structures.Load()[Selected].GetPTZController.IsSuported) MessageBox.Show("Камера поддерживает PTZ");
+            else MessageBox.Show("Камера PTZ не поддерживает");
+        }
+
+        private void задатьТекущееПоложениеКакДомашнееToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Structures.Load()[Selected].GetPTZController.SetHome();
         }
     }
     public static class ExtensionMethods
@@ -577,6 +712,21 @@ namespace IPCamera
                 if (!list.Contains(item)) list.Add(item);
             }
             else list.Add(item); ;
+        }
+        /// <summary>
+        /// Добавляет элемент в коллекцию, если его еще там нет
+        /// </summary>
+        /// <typeparam name="T">Тип коллекции</typeparam>
+        /// <param name="list">Коллекция</param>
+        /// <param name="item">Элемент</param>
+        /// <param name="Search">Производить поиск</param>
+        public static void Add<T, U>(this SortedList<T, U> list, T key, U item, bool Search = true)
+        {
+            if (Search)
+            {
+                if (!list.ContainsKey(key)) list.Add(key, item);
+            }
+            else list.Add(key, item); ;
         }
     }
 }

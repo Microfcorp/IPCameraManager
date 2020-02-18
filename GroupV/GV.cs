@@ -40,7 +40,7 @@ namespace IPCamera.GroupV
             for (int i = 0; i < set.Length; i++)
             {
                 if(!Cameras.ContainsKey(set[i].IP + i))
-                    Cameras.Add(set[i].IP + i, new CV.MootionDetect(set[i].GetRTSPSecond));
+                    Cameras.Add(set[i].IP + i, new CV.MootionDetect(set[i].GetRTSPSecondONVIF));
                 
                 Cameras[set[i].IP + i].DetectPed = false;
 

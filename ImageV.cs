@@ -24,6 +24,7 @@ namespace IPCamera
                 return (int)(((float)1 / (float)trackBar1.Value) * 1000);
             }
         }
+        string pathtophoto;
         public ImageV(uint Selected)
         {           
             InitializeComponent();
@@ -35,6 +36,8 @@ namespace IPCamera
 
             _btn1xScale1 = trackBar1.Location.X / (float)this.Width;
             _btn1yScale1 = trackBar1.Location.Y / (float)this.Height;
+
+            pathtophoto = structures.GetPhotoStreamSecondONVIF;
         }
 
         private void ImageV_Load(object sender, EventArgs e)
@@ -49,7 +52,8 @@ namespace IPCamera
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            pictureBox1.ImageLocation = structures.GetPhotoStream;
+            if (structures.TypeCamera == Network.Network.TypeCamera.Other) pictureBox1.Image = Network.Downloading.GetImageWitchAutorized(pathtophoto, structures.Login, structures.Password);
+            else pictureBox1.ImageLocation = structures.GetPhotoStream;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -85,6 +89,11 @@ namespace IPCamera
 
             button1.Size = new Size(Size.Width - 40, button1.Size.Height);
             trackBar1.Size = new Size(Size.Width - 40, trackBar1.Size.Height);
+        }
+
+        private void ImageV_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            timer1.Stop();
         }
     }
 }

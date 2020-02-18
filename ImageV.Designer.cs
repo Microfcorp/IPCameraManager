@@ -91,6 +91,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageV";
             this.Text = "ImageV";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImageV_FormClosing);
             this.Load += new System.EventHandler(this.ImageV_Load);
             this.ResizeEnd += new System.EventHandler(this.ImageV_ResizeEnd);
             this.Resize += new System.EventHandler(this.ImageV_Resize);

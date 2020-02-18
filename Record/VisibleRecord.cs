@@ -54,11 +54,11 @@ namespace IPCamera.Record
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            label2.Text = e.Node.Text;
+            /*label2.Text = e.Node.Text;
             label3.Text = formatFileSize(new FileInfo(e.Node.Name).Length);
             label5.Text = new FileInfo(e.Node.Name).LastWriteTime.ToString();
             label7.Text = e.Node.Text.Split('-').Last().Split('.')[0];
-            t = e.Node;
+            t = e.Node;*/
         }
 
         TreeNode t;
@@ -85,6 +85,16 @@ namespace IPCamera.Record
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
             
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            label2.Text = e.Node.Text;
+            label3.Text = formatFileSize(new FileInfo(e.Node.Name).Length);
+            label5.Text = new FileInfo(e.Node.Name).LastWriteTime.ToString();
+            label7.Text = e.Node.Text.Split('-').Last().Split('.').First();
+            label10.Text = e.Node.Text.Split(' ').First();
+            t = e.Node;
         }
     }
 }

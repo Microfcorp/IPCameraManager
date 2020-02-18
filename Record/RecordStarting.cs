@@ -23,10 +23,10 @@ namespace IPCamera.Record
             ret.IsRunning = true;
             var set = Structures.Load()[Selected];
             var rec = set.Records;
-            var uri = rec.StreamType == StreamType.Primary ? set.GetRTSPFirst : set.GetRTSPSecond;
+            var uri = rec.StreamType == StreamType.Primary ? set.GetRTSPFirstONVIF : set.GetRTSPSecondONVIF;
             if (rec.RecordFolder == null) { ret.IsRunning = false; return ret; }
             Directory.CreateDirectory(rec.RecordFolder);
-            var path = rec.RecordFolder + "\\"+ DateTime.Now.ToString().Replace(":", "-") + " - REC-%d" + ".mkv";
+            var path = rec.RecordFolder + "\\" + set.IP + " " + DateTime.Now.ToString().Replace(":", "-") + " - REC-%d" + ".mkv";
 
             Process st = new Process();
             st.StartInfo.FileName = Convert.ffmpeg;

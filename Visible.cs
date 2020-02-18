@@ -19,6 +19,7 @@ namespace IPCamera
         Process s;
 
         Settings.Structures Setting;
+        uint Selected;
 
         bool IsHigh = true;
 
@@ -26,6 +27,7 @@ namespace IPCamera
         {
             InitializeComponent();
             Setting = Settings.Structures.Load()[Selected];
+            this.Selected = Selected;
             Application.EnableVisualStyles();
             this.DoubleBuffered = true;
             BackColor = Color.Blue;
@@ -34,10 +36,11 @@ namespace IPCamera
         void Play()
         {          
             if (s != null && !s.HasExited) s.Kill();
+            Setting = Settings.Structures.Load()[Selected];
 
             s = new Process();
             s.StartInfo.FileName = "ffplay.exe";
-            s.StartInfo.Arguments = String.Format(IsHigh ? Setting.GetRTSPFirst : Setting.GetRTSPSecond)
+            s.StartInfo.Arguments = String.Format(IsHigh ? Setting.GetRTSPFirstONVIF : Setting.GetRTSPSecondONVIF)
                 + " -x 640 -y 360";
             s.StartInfo.UseShellExecute = false;
             s.StartInfo.CreateNoWindow = true;
@@ -79,19 +82,22 @@ namespace IPCamera
             if (e.Control)
                 if (e.KeyCode == Keys.S)
                 {
-                    IsHigh = !IsHigh;
-                    s.EnableRaisingEvents = false;
-                    BackColor = Color.Blue;
-                    Play();
+                    ChangeRes();
                 }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            ChangeRes();
+        }
+
+        private void ChangeRes()
+        {
             IsHigh = !IsHigh;
             s.EnableRaisingEvents = false;
             BackColor = Color.Blue;
             Play();
+            button1.Text = "Переключить поток ("+(IsHigh?"Первичный":"Вторичный")+")";
         }
 
         private void Visible_FormClosing(object sender, FormClosingEventArgs e)

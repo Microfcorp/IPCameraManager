@@ -283,13 +283,13 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.скачатьToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(119, 26);
             this.contextMenuStrip1.Text = "Файл";
             // 
             // скачатьToolStripMenuItem
             // 
             this.скачатьToolStripMenuItem.Name = "скачатьToolStripMenuItem";
-            this.скачатьToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.скачатьToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.скачатьToolStripMenuItem.Text = "Скачать";
             this.скачатьToolStripMenuItem.Click += new System.EventHandler(this.скачатьToolStripMenuItem_Click);
             // 
