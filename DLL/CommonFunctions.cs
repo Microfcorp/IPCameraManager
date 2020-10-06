@@ -116,6 +116,55 @@ namespace IPCamera.DLL
             CTRL_SHUTDOWN = 6
         }
 
+        /// <summary>
+        /// Получить активный процесс
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("user32.dll")]       
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32", SetLastError = true)]
+        public static extern int GetWindowThreadProcessId([In]IntPtr hwnd, [Out]out int lProcessId);
+
+        /// <summary>
+        /// В фокусе ли данный процес по ID
+        /// </summary>
+        /// <param name="processId">ID процесса</param>
+        /// <returns></returns>
+        public static bool IsFocusWindow(this int processId)
+        {
+            int lProcessId;
+            IntPtr foregroundWindow = GetForegroundWindow();
+            GetWindowThreadProcessId(foregroundWindow, out lProcessId);
+            return processId == lProcessId;
+        }
+
+        /// <summary>
+        /// Нажата ли данная клавиша на клавиатуре
+        /// </summary>
+        /// <param name="vKey"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(this System.Windows.Forms.Keys vKey);
+
+        /// <summary>
+        /// Зарегистрировать горячую клавишу
+        /// </summary>
+        /// <param name="hWnd">Хандлер окна</param>
+        /// <param name="id">ID хоткея</param>
+        /// <param name="fsModifiers">Модификатор</param>
+        /// <param name="vk">Клавиша</param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(this IntPtr hWnd, int id, uint fsModifiers, uint vk);
+        /// <summary>
+        /// Унрегистрирвоать горячую клавишу
+        /// </summary>
+        /// <param name="hWnd">Хандлер окна</param>
+        /// <param name="id">ID хоткея</param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(this IntPtr hWnd, int id);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr CreateJobObject(this IntPtr lpJobAttributes, string name);

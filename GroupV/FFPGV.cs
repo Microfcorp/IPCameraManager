@@ -91,7 +91,7 @@ namespace IPCamera.GroupV
                     if (CountRun[set[ia].IP + ia] < CountRunning)
                     {
                         CountRun[set[ia].IP + ia]++;
-                        var Camera = o as Process;
+                        //var Camera = o as Process;
                         _IsRunFFMPEG.Add(set[ia].IP + ia);
                         PanelCameras[set[ia].IP + ia].Invoke(new Action(() =>
                         {

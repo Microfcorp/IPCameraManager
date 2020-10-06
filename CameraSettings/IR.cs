@@ -14,6 +14,7 @@ namespace IPCamera
     public partial class IR : Form
     {
         Structures structures;
+        private string pathtophoto;
 
         /// <summary>
         /// Режим работы ИК
@@ -227,6 +228,7 @@ namespace IPCamera
         {
             InitializeComponent();
             structures = Structures.Load()[Selected];
+            pathtophoto = structures.GetPhotoStreamSecondONVIF;
         }
 
         private void IR_Load(object sender, EventArgs e)
@@ -305,7 +307,8 @@ namespace IPCamera
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            pictureBox1.ImageLocation = structures.GetPhotoStream;
+            if (structures.TypeCamera == Network.Network.TypeCamera.Other) pictureBox1.Image = Network.Downloading.GetImageWitchAutorized(pathtophoto, structures.Login, structures.Password);
+            else pictureBox1.ImageLocation = structures.GetPhotoStream;
         }
 
         private void Save()
