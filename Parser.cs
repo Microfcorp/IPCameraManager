@@ -37,6 +37,7 @@ namespace IPCamera.ComandArgs
             {
                 if (args[i] == Params)
                 {
+                    bol = true;
                     ret = args[i + 1];
                     break;
                 }

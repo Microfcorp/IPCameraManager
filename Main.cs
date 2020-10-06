@@ -13,6 +13,10 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using IPCamera.DLL;
+using IPCamera.ComandArgs;
+using IPCamera.Network.AutoUpdate;
+using IPCamera.Network;
+using System.Threading.Tasks;
 
 namespace IPCamera
 {
@@ -85,6 +89,18 @@ namespace IPCamera
             }
         }
 
+        private bool PTZ
+        {
+            get
+            {
+                return checkBox1.Checked;
+            }
+            set
+            {
+                checkBox1.Checked = value;
+            }
+        }
+
         public Network.Network.TypeCamera GetTypeCamera
         {
             get
@@ -100,7 +116,7 @@ namespace IPCamera
                     radioButton1.Checked = true;
                     загрузкаФайловToolStripMenuItem.Visible = true;
                     логиToolStripMenuItem.Visible = true;
-                    настройкиToolStripMenuItem.Visible = true;
+                    настройкиИзображенияToolStripMenuItem.Visible = true;
                 }
                 else
                 {
@@ -116,6 +132,8 @@ namespace IPCamera
 
         List<ToolStripMenuItem> Items = new List<ToolStripMenuItem>();
         SortedList<string, int> ONVIFPORTS = new SortedList<string, int>();
+        Thread th = new Thread(new ParameterizedThreadStart(UpdateStructures));
+        AutoResetEvent evt = new AutoResetEvent(true);
 
         private uint _selected = 0;
 
@@ -124,36 +142,110 @@ namespace IPCamera
             get => _selected;
             set
             {
-                _selected = value;
                 if (value >= Structures.Load().Length) return;
                 var structures = Structures.Load()[value];
-                IP = structures.IP;
-                UserName = structures.Name;
-                Password = structures.Password;
-                HTTPPort = structures.HTTPPort;
-                RTSPPort = structures.RTSPPort;
-                ONVIFPort = structures.ONVIFPort;
-                GetTypeCamera = structures.TypeCamera;
 
-                Items.Where(tmp => tmp.Name == value.ToString()).ToList().ForEach(tmp => tmp.Checked = true);
-                Items.Where(tmp => tmp.Name != value.ToString()).ToList().ForEach(tmp => tmp.Checked = false);
-                Network.Network.TypeCurentCamera = Structures.Load()[value].TypeCamera;
-                текущаяКамераToolStripMenuItem.Text = "Текущая камера (" + structures.IP + ") - " + (Items.Count > 0 ? (Items.Where(tmp => tmp.Text.Contains(structures.IP)).ToArray().First().Text.Contains("Не доступен") ? "Не доступен" : "Доступен") : "");
+                if(InvokeRequired) Invoke(new Action(() => 
+                {
+                    Cursor = Cursors.WaitCursor;
+                    _selected = value;                   
+                    IP = structures.IP;
+                    UserName = structures.Name;
+                    Password = structures.Password;
+                    HTTPPort = structures.HTTPPort;
+                    RTSPPort = structures.RTSPPort;
+                    ONVIFPort = structures.ONVIFPort;
+                    GetTypeCamera = structures.TypeCamera;
+                    PTZ = structures.PTZ;
+                }));
+                else
+                {
+                    Cursor = Cursors.WaitCursor;
+                    _selected = value;
+                    IP = structures.IP;
+                    UserName = structures.Name;
+                    Password = structures.Password;
+                    HTTPPort = structures.HTTPPort;
+                    RTSPPort = structures.RTSPPort;
+                    ONVIFPort = structures.ONVIFPort;
+                    GetTypeCamera = structures.TypeCamera;
+                    PTZ = structures.PTZ;
+                }
+                NM = structures.NameCamera;
+
+                var active = structures.IsActive;
+                if (!active) active = structures.IsActive;
+
+                if (InvokeRequired) Invoke(new Action(() =>
+                {
+                    задатьТекущееПоложениеКакДомашнееToolStripMenuItem.Enabled = сценарииДвиженияToolStripMenuItem.Enabled = управлениеToolStripMenuItem.Enabled = остановитьToolStripMenuItem.Enabled = structures.GetPTZController().IsSuported;
+                    оКамереToolStripMenuItem.Enabled = button8.Enabled = загрузкаФайловToolStripMenuItem.Enabled = логиToolStripMenuItem.Enabled = openCVToolStripMenuItem.Enabled = начатьЗаписьToolStripMenuItem1.Enabled = потокONVIFToolStripMenuItem.Enabled = определитьПоддержкуPTZToolStripMenuItem.Enabled = настройкиИзображенияToolStripMenuItem.Enabled = одиночноеToolStripMenuItem.Enabled = просмотрФотоToolStripMenuItem.Enabled = перейтиВВебинтерфейсToolStripMenuItem.Enabled = active;
+                    Network.Network.TypeCurentCamera = structures.TypeCamera;
+                    текущаяКамераToolStripMenuItem.Text = "Текущая камера (" + structures.NameCamera + ")" + (structures.GetPTZController().IsSuported ? " (PTZ)" : "") + " - " + (!active ? "Не доступен" : "Доступен");
+                    Items.Where(tmp => tmp.Name == value.ToString()).ToList().ForEach(tmp => tmp.Checked = true);
+                    Items.Where(tmp => tmp.Name != value.ToString()).ToList().ForEach(tmp => tmp.Checked = false);
+                }));
+                else
+                {
+                    задатьТекущееПоложениеКакДомашнееToolStripMenuItem.Enabled = сценарииДвиженияToolStripMenuItem.Enabled = управлениеToolStripMenuItem.Enabled = остановитьToolStripMenuItem.Enabled = structures.GetPTZController().IsSuported;
+                    оКамереToolStripMenuItem.Enabled = button8.Enabled = загрузкаФайловToolStripMenuItem.Enabled = логиToolStripMenuItem.Enabled = openCVToolStripMenuItem.Enabled = начатьЗаписьToolStripMenuItem1.Enabled = потокONVIFToolStripMenuItem.Enabled = определитьПоддержкуPTZToolStripMenuItem.Enabled = настройкиИзображенияToolStripMenuItem.Enabled = одиночноеToolStripMenuItem.Enabled = просмотрФотоToolStripMenuItem.Enabled = перейтиВВебинтерфейсToolStripMenuItem.Enabled = active;
+                    Network.Network.TypeCurentCamera = structures.TypeCamera;
+                    текущаяКамераToolStripMenuItem.Text = "Текущая камера (" + structures.NameCamera + ")" + (structures.GetPTZController().IsSuported ? " (PTZ)" : "") + " - " + (!active ? "Не доступен" : "Доступен");
+                    Items.Where(tmp => tmp.Name == value.ToString()).ToList().ForEach(tmp => tmp.Checked = true);
+                    Items.Where(tmp => tmp.Name != value.ToString()).ToList().ForEach(tmp => tmp.Checked = false);
+                }
+                
                 UpdatePotoks(structures);
+
+                if (InvokeRequired) Invoke(new Action(() =>
+                {
+                    Cursor = Cursors.Default;
+                }));
+                else
+                    Cursor = Cursors.Default;
             }
         }
-
-        public Main()
+        bool NoTi = false;
+        public Main(Parser p)
         {
             InitializeComponent();
+
+            //Loading ld = new Loading();
+            //ld.Show();
+
+            if (!p.FindParams("-nb")) notifyIcon1.ShowBalloonTip(500, "IPCamera Manager", "Пожалуйста подождите. Приложение запускается", ToolTipIcon.Info);
+
+            timer3.Enabled = !p.FindParams("-ni");
+            NoTi = p.FindParams("-np");
+
+            if (p.FindParamsAndArgs("-ap", out string ipq))
+            {
+                AlwaysVisible cnv = new AlwaysVisible(uint.Parse(ipq));
+                cnv.Show();
+            }
+
+            if (p.FindParams("-rs"))
+            {
+                Structures.DeleteSetting();
+                PTZScenes.PTZCollection.DeleteSetting();
+                Monitors.MonitorsController.DeleteSetting();
+                Settings.StaticMembers.ImageSettings.FPS = 10;
+                Settings.StaticMembers.ImageSettings.Padding = 8;
+                Settings.StaticMembers.PTZSettings.Timeout = 500;
+                Settings.StaticMembers.PTZSettings.StepTimeout = 200;
+            }
+
             Selected = 0;
             System.Net.ServicePointManager.Expect100Continue = false;
             System.Net.ServicePointManager.UseNagleAlgorithm = false;
+            //ld.Close();
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
+            th.IsBackground = true;
             UpdateStructures();
+
             if (Selected >= Structures.Load().Length) return;
             var structures = Structures.Load()[Selected];
             IP = structures.IP;
@@ -161,51 +253,118 @@ namespace IPCamera
             Password = structures.Password;
             HTTPPort = structures.HTTPPort;
             RTSPPort = structures.RTSPPort;
-            ONVIFPort = structures.ONVIFPort;
-            Items[(int)Selected].Checked = true;
+            ONVIFPort = structures.ONVIFPort;           
             GetTypeCamera = structures.TypeCamera;
+            PTZ = structures.PTZ;
 
-            Selected = uint.Parse(Items[0].Name);
+            //Items[(int)Selected].Checked = true;
+            //Selected = uint.Parse(Items[0].Name);
 
             SearchONVIF();
+            GetMonitors();
+            GetPTZS();
+
+            toolStripTextBox1.Text = Settings.StaticMembers.ImageSettings.FPS.ToString();
+            toolStripTextBox2.Text = Settings.StaticMembers.ImageSettings.Padding.ToString();
+            toolStripTextBox3.Text = Settings.StaticMembers.PTZSettings.Timeout.ToString();
+            toolStripTextBox4.Text = Settings.StaticMembers.PTZSettings.StepTimeout.ToString();
+
             Record.RecordStarting.MainForm = Handle;
 
             var records = Structures.Load().Where(tmp => tmp.Records.AutoLoad == Settings.Record.AutoEnabmle.ON);
             for (int i = 0; i < records.Count(); i++)
                 StartRecord(i);
 
-            //Console.WriteLine(ONVIF.SendResponce.GetVideoResolution(structures.GetONVIF, structures.Name, structures.Password));
-           // Console.WriteLine(ONVIF.SendResponce.GetPTZ(structures.GetONVIF, structures.Name, structures.Password));
+
+            if (timer3.Enabled) //Уведомления о переключении подстветки
+            {
+                var host = Structures.Load();
+                host = host.Where(tmp => tmp.TypeCamera == Network.Network.TypeCamera.HI3510).ToArray();
+                foreach (var item in host)
+                {
+                    if (item.IsActive)
+                    {
+                        var logs = Downloading.GetLogDevice(item.URLToHTTPPort, item.Name, item.Password);
+                        foreach (IRCut item1 in logs.Nodes.Where(x => x is IRCut))
+                            slogs.Add(item1.date, item.IP, true);
+                    }
+                }
+            }
+
+            if (!NoTi)
+            {
+                var ptzs = PTZScenes.PTZCollection.Load().Where(tmp => tmp.Trigger == PTZScenes.TriggerPTZ.Timer).ToArray();
+                for (int i = 0; i < ptzs.Length; i++)
+                {
+                    var tm = new System.Windows.Forms.Timer
+                    {
+                        Interval = (int)ptzs[i].DefaultTriggerData.Timer_Timeout.TimeOfDay.TotalMilliseconds
+                    };
+                    var ia = i;
+                    tm.Tick += (o, q) =>
+                    {
+                        if (ptzs[ia].Trigger == PTZScenes.TriggerPTZ.Timer)
+                            PTZScenes.PTZRunning.Run(ptzs[ia], Structures.Load()[ptzs[ia].DefaultTriggerData.CameraTrigger]);
+                        else
+                            (o as System.Windows.Forms.Timer).Stop();
+
+                        (o as System.Windows.Forms.Timer).Interval = (int)ptzs[ia].DefaultTriggerData.Timer_Timeout.TimeOfDay.TotalMilliseconds;
+                    };
+                    //tm.Start();
+                }
+            }
+
+            //Console.WriteLine(Structures.Load()[2].GetONVIFController().IsMotionDetect);
+            //Console.WriteLine(ONVIF.SendResponce.GetEvents(Structures.Load()[1]));
+            //Console.WriteLine(ONVIF.SendResponce.GetPTZ(structures.GetONVIF, structures.Name, structures.Password));
         }
         private void ChangeSelected(object sender, EventArgs e)
         {
-            Selected = uint.Parse((sender as ToolStripMenuItem).Name);            
+            Thread t = new Thread(new ParameterizedThreadStart((tmp) => { Selected = uint.Parse((tmp as ToolStripMenuItem).Name); }));
+            t.Start(sender);
         }
 
         private void UpdatePotoks(Structures str)
         {
-            //if (!str.GetONVIFController.IsSupported) return;
+            if (!str.GetONVIFController().IsSupported) return;
 
-            первичныйToolStripMenuItem.DropDownItems.Clear();
-            вторичныйToolStripMenuItem.DropDownItems.Clear();          
-            
-            var pr = ONVIF.SendResponce.GetProfiles(str);
+            if (InvokeRequired) Invoke(new Action(() =>
+            {
+                первичныйToolStripMenuItem.DropDownItems.Clear();
+                вторичныйToolStripMenuItem.DropDownItems.Clear();
+            }));
+            else
+            {
+                первичныйToolStripMenuItem.DropDownItems.Clear();
+                вторичныйToolStripMenuItem.DropDownItems.Clear();
+            }
+
+            var pr = str.GetONVIFController().Profiles;
 
             for (int i = 0; i < pr.Length; i++)
             {
                 var raz = " (" + pr[i].VideoEncoderConfiguration.Resolution.Width + "x" + pr[i].VideoEncoderConfiguration.Resolution.Height + ")";
+
                 ToolStripMenuItem tm = new ToolStripMenuItem(i + " - " + pr[i].Name.Trim('"') + raz, null, StreamFSelected, i.ToString())
                 {
                     Checked = str.SelectFirstProfile == i,
                 };
-                первичныйToolStripMenuItem.DropDownItems.Add(tm);
+                if (InvokeRequired) Invoke(new Action(() =>
+                {
+                    первичныйToolStripMenuItem.DropDownItems.Add(tm);
+                }));
+                else первичныйToolStripMenuItem.DropDownItems.Add(tm);
 
                 ToolStripMenuItem tm1 = new ToolStripMenuItem(i + " - " + pr[i].Name.Trim('"') + raz, null, StreamSSelected, i.ToString())
                 {
                     Checked = str.SelectSecondProfile == i,
                 };
-                вторичныйToolStripMenuItem.DropDownItems.Add(tm1);
-            }            
+                if (InvokeRequired) Invoke(new Action(() =>
+                {
+                    вторичныйToolStripMenuItem.DropDownItems.Add(tm1);
+                }));
+                else вторичныйToolStripMenuItem.DropDownItems.Add(tm1);
+            }
         }
         private void StreamFSelected(object sender, EventArgs e)
         {
@@ -214,7 +373,7 @@ namespace IPCamera
             Structures.Save(structur);
             foreach (var tmp in первичныйToolStripMenuItem.DropDownItems)
                 (tmp as ToolStripMenuItem).Checked = false;
-            (sender as ToolStripMenuItem).Checked = true;           
+            (sender as ToolStripMenuItem).Checked = true;
         }
         private void StreamSSelected(object sender, EventArgs e)
         {
@@ -226,38 +385,147 @@ namespace IPCamera
             (sender as ToolStripMenuItem).Checked = true;
         }
 
+        private void GetMonitors()
+        {
+            запуститьМониторToolStripMenuItem.DropDownItems.Clear();
+            настроитьМониторToolStripMenuItem.DropDownItems.Clear();
+            удалитьМониторToolStripMenuItem.DropDownItems.Clear();
+
+            var Monitor = Monitors.MonitorsController.Load();
+
+            for (int i = 0; i < Monitor.Length; i++)
+            {
+                ToolStripMenuItem tm = new ToolStripMenuItem(i + " - " + Monitor[i].Name, null, PlayMonitor, i.ToString());
+                ToolStripMenuItem tm1 = new ToolStripMenuItem(i + " - " + Monitor[i].Name, null, EditMonitor, i.ToString());
+                ToolStripMenuItem tm2 = new ToolStripMenuItem(i + " - " + Monitor[i].Name, null, RemoveMonitor, i.ToString());
+                запуститьМониторToolStripMenuItem.DropDownItems.Add(tm);
+                настроитьМониторToolStripMenuItem.DropDownItems.Add(tm1);
+                удалитьМониторToolStripMenuItem.DropDownItems.Add(tm2);
+            }
+        }
+
+        private void PlayMonitor(object sender, EventArgs e)
+        {
+            var s = Monitors.MonitorsController.Load();
+            var mv = new Monitors.MonitorVisible(s[int.Parse((sender as ToolStripMenuItem).Name)]);
+            mv.Show();
+        }
+        private void EditMonitor(object sender, EventArgs e)
+        {
+            var s = Monitors.MonitorsController.Load();
+            var mv = new Monitors.MonitorEdit(s[int.Parse((sender as ToolStripMenuItem).Name)], int.Parse((sender as ToolStripMenuItem).Name));
+            mv.FormClosed += (o, a) => GetMonitors();
+            mv.Show();
+        }
+        private void RemoveMonitor(object sender, EventArgs e)
+        {
+            var s = Monitors.MonitorsController.Load().ToList();
+            s.RemoveAt(int.Parse((sender as ToolStripMenuItem).Name));
+            Monitors.MonitorsController.Save(s.ToArray());
+            GetMonitors();
+        }
+
+        private void GetPTZS()
+        {
+            запуститьToolStripMenuItem.DropDownItems.Clear();
+            настроитьToolStripMenuItem.DropDownItems.Clear();
+            удалитьToolStripMenuItem1.DropDownItems.Clear();
+
+            var Monitor = PTZScenes.PTZCollection.Load();
+
+            for (int i = 0; i < Monitor.Length; i++)
+            {
+                ToolStripMenuItem tm = new ToolStripMenuItem(i + " - " + Monitor[i].Name, null, PlayPTZS, i.ToString());
+                ToolStripMenuItem tm1 = new ToolStripMenuItem(i + " - " + Monitor[i].Name, null, EditPTZS, i.ToString());
+                ToolStripMenuItem tm2 = new ToolStripMenuItem(i + " - " + Monitor[i].Name, null, RemovePTZS, i.ToString());
+                запуститьToolStripMenuItem.DropDownItems.Add(tm);
+                настроитьToolStripMenuItem.DropDownItems.Add(tm1);
+                удалитьToolStripMenuItem1.DropDownItems.Add(tm2);
+            }
+        }
+
+        private void PlayPTZS(object sender, EventArgs e)
+        {
+            var s = PTZScenes.PTZCollection.Load();
+            PTZScenes.PTZRunning.Run(s[int.Parse((sender as ToolStripMenuItem).Name)], Structures.Load()[Selected]);
+        }
+        private void EditPTZS(object sender, EventArgs e)
+        {
+            var s = PTZScenes.PTZCollection.Load();
+            var mv = new PTZScenes.Editor(s[int.Parse((sender as ToolStripMenuItem).Name)], int.Parse((sender as ToolStripMenuItem).Name));
+            mv.FormClosed += (o, a) => GetPTZS();
+            mv.Show();
+        }
+        private void RemovePTZS(object sender, EventArgs e)
+        {
+            var s = PTZScenes.PTZCollection.Load().ToList();
+            s.RemoveAt(int.Parse((sender as ToolStripMenuItem).Name));
+            PTZScenes.PTZCollection.Save(s.ToArray());
+            GetPTZS();
+        }
+
         private void AddAdd()
         {
-            ToolStripMenuItem tm = new ToolStripMenuItem("Добавить", null, добавитьToolStripMenuItem_Click);
-            выборКамерыToolStripMenuItem.DropDownItems.Add(tm);
-            выборКамерыToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            if (InvokeRequired) Invoke(new Action(() => 
+            {
+                ToolStripMenuItem tm = new ToolStripMenuItem("Добавить", null, добавитьToolStripMenuItem_Click);
+                выборКамерыToolStripMenuItem.DropDownItems.Add(tm);
+                выборКамерыToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            }));
+            else
+            {
+                ToolStripMenuItem tm = new ToolStripMenuItem("Добавить", null, добавитьToolStripMenuItem_Click);
+                выборКамерыToolStripMenuItem.DropDownItems.Add(tm);
+                выборКамерыToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            }
         }
+
         private void UpdateStructures()
         {
-            выборКамерыToolStripMenuItem.DropDownItems.Clear();
-            Items.Clear();
-            var structur = Structures.Load();
-            for (int i = 0; i < structur.Length; i++)
+            if (!th.IsAlive)
             {
-                var dostup = structur[i].IsActive ? " (Доступен)" : " (Не доступен)";
-                ToolStripMenuItem tm = new ToolStripMenuItem(structur[i].IP + dostup, null, ChangeSelected, i.ToString());
-                tm.Checked = false;
-                bool isptz = (new ONVIF.PTZ.PTZController(structur[i]).IsSuported);
-                tm.BackColor = isptz ? Color.LightCyan : Color.Transparent;
-                tm.Text += isptz ? " (PTZ)" : "";
-                Items.Add(tm);               
-            }           
-            AddAdd();
-            Items = Items.OrderByDescending(tmp => tmp.Text.Contains("Доступен")).ToList();            
-            выборКамерыToolStripMenuItem.DropDownItems.AddRange(Items.ToArray());
-            Selected = Selected;
-            Items.ForEach(tmp => tmp.Checked = false);
+                th.Start(this);
+            }
+            else
+            {
+                evt.Set();
+            }
+        }
+
+        private static void UpdateStructures(object m)
+        {
+            var frm = m as Main;
+            while (true)
+            {
+                frm.evt.WaitOne();
+
+                frm.Invoke(new Action(() => frm.выборКамерыToolStripMenuItem.DropDownItems.Clear()));
+                frm.Items.Clear();
+                var structur = Structures.Load();
+                for (int i = 0; i < structur.Length; i++)
+                {
+                    var dostup = structur[i].IsActive ? " (Доступен)" : " (Не доступен)";
+                    ToolStripMenuItem tm = new ToolStripMenuItem(structur[i].NameCamera + " (" + structur[i].IP + ")" + dostup, null, frm.ChangeSelected, i.ToString())
+                    {
+                        Checked = false
+                    };
+                    bool isptz = structur[i].GetPTZController().IsSuported;
+                    tm.BackColor = isptz ? Color.LightCyan : Color.Transparent;
+                    tm.Text += isptz ? " (PTZ)" : "";
+                    frm.Items.Add(tm);
+                }
+                frm.AddAdd();
+                //frm.Items = frm.Items.OrderByDescending(tmp => tmp.Text.Contains("Доступен")).ToList();
+                frm.Invoke(new Action(() => frm.выборКамерыToolStripMenuItem.DropDownItems.AddRange(frm.Items.ToArray())));
+                frm.Selected = frm.Selected;
+                frm.Invoke(new Action(() => frm.Items.ForEach(tmp => tmp.Checked = false)));
+                frm.Invoke(new Action(() => frm.Items[(int)frm.Selected].Checked = true));
+            }
         }
 
         private void настройкиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            panel1.Visible = !panel1.Visible;
-            panel3.Visible = panel1.Visible ? false : true;
+
         }
 
         private void SearchONVIF()
@@ -276,7 +544,7 @@ namespace IPCamera
 
             FindCriteria findCriteria = new FindCriteria
             {
-                Duration = TimeSpan.MaxValue,
+                Duration = new TimeSpan(0, 0, 10),
                 MaxResults = int.MaxValue
             };
             // Edit: optionally specify contract type, ONVIF v1.0
@@ -305,8 +573,11 @@ namespace IPCamera
             panel1.Visible = false;
             panel3.Visible = true;
             var structures = Structures.Load();
-            structures[Selected] = new Structures(IP, UserName, Password, HTTPPort, RTSPPort, ONVIFPort, Structures.Load()[Selected].SelectFirstProfile, Structures.Load()[Selected].SelectSecondProfile, Structures.Load()[Selected].ValueMD, Structures.Load()[Selected].ZoneDetect, GetTypeCamera, Structures.Load()[Selected].Records);
+            structures[Selected] = new Structures(IP, UserName, Password, HTTPPort, RTSPPort, ONVIFPort, Structures.Load()[Selected].SelectFirstProfile, Structures.Load()[Selected].SelectSecondProfile, PTZ, Structures.Load()[Selected].ValueMD, Structures.Load()[Selected].ZoneDetect, GetTypeCamera, Structures.Load()[Selected].Records, NM, MAC.ConvertIpToMAC(System.Net.IPAddress.Parse(IP)));
             Structures.Save(structures);
+
+            if (!structures[Selected].IsActive) MessageBox.Show("Данная камера сейчас недоступна. Проверьте все ли данные указаны верно");
+
             UpdateStructures();
             Selected = Selected;
         }
@@ -412,11 +683,6 @@ namespace IPCamera
             Selected = 0;
         }
 
-        private void текущаяКамераToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void дляВсехКамерToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var structuress = Structures.Load();
@@ -451,9 +717,9 @@ namespace IPCamera
 
         List<Visible> visibles = new List<Visible>();
 
-        private void ShowVisible(int Selected)
+        private void ShowVisible(int Selected, bool ump = false)
         {
-            Visible cnv = new Visible((uint)Selected);
+            Visible cnv = new Visible((uint)Selected, ump);
             cnv.Show();
             cnv.Handle.SetParent(panel2.Handle);
             cnv.Handle.MoveWindow((visibles.Count * cnv.Width) + 1, 1, cnv.Width, cnv.Height, true);
@@ -463,7 +729,8 @@ namespace IPCamera
             hScrollBar1.Maximum = Math.Max(1, ((visibles.Count - 2) * cnv.Width) + 1);
             hScrollBar1.Visible = visibles.Count >= 3 ? true : false;
             cnv.FormClosing += (o, e) => { visibles.Remove(cnv); };
-            visibles.Add(cnv);
+            cnv.Reload += (o, e) => { visibles.Add(cnv); };
+            //visibles.Add(cnv);
         }
 
         private void всеToolStripMenuItem_Click(object sender, EventArgs e)
@@ -514,12 +781,12 @@ namespace IPCamera
 
         private void настройкиИзображенияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            groupBox1.Visible = !groupBox1.Visible;            
+            groupBox1.Visible = !groupBox1.Visible;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -548,9 +815,9 @@ namespace IPCamera
 
             if (Records[ID].IsStop) return;
 
-            if (!Records[ID].IsRunning) 
-            { 
-                Records[ID] = Record.RecordStarting.StartRecord((uint)ID, ID);                
+            if (!Records[ID].IsRunning)
+            {
+                Records[ID] = Record.RecordStarting.StartRecord((uint)ID, ID);
             }
 
             Records[ID].Exited += (o, es) => { Items[(o as Record.RecordParameters).ID].Image = null; };
@@ -603,15 +870,12 @@ namespace IPCamera
             MessageBox.Show("Все записи остановлены");
         }
 
-        private void просмотрЗаписиToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void button5_Click(object sender, EventArgs e)
         {
-            if (Network.Ping.IsOKServer(Structures.Load()[Selected].GetHTTP + "Login.htm"))
+            if (Network.Ping.IsOKResource(Structures.Load()[Selected].GetHTTP + "Login.htm"))
                 GetTypeCamera = Network.Network.TypeCamera.HI3518;
+            //else if (Network.Ping.IsOKResource(Structures.Load()[Selected].GetHTTP)) 
+            //    GetTypeCamera = Network.Network.TypeCamera.HI3510;
             else GetTypeCamera = Network.Network.TypeCamera.HI3510;
         }
 
@@ -647,7 +911,7 @@ namespace IPCamera
 
         private void начатьЗаписьToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if(Records.Any()) Records.Where(tmp => tmp.Value.ID == (int)Selected).FirstOrDefault().Value.IsStop = false;
+            if (Records.Any()) Records.Where(tmp => tmp.Value.ID == (int)Selected).FirstOrDefault().Value.IsStop = false;
             StartRecord((int)Selected);
         }
 
@@ -664,19 +928,230 @@ namespace IPCamera
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ONVIFPORTS.ContainsKey(comboBox1.Text))
+            if (ONVIFPORTS.Keys.Contains(comboBox1.Text))
                 numericUpDown3.Value = ONVIFPORTS[comboBox1.Text];
         }
 
         private void определитьПоддержкуPTZToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Structures.Load()[Selected].GetPTZController.IsSuported) MessageBox.Show("Камера поддерживает PTZ");
+            if (Structures.Load()[Selected].GetPTZController().IsSuported) MessageBox.Show("Камера поддерживает PTZ");
+            else if (!Structures.Load()[Selected].IsActive) MessageBox.Show("Невозможно определить наличие PTZ, поскольку камера недоступна");
             else MessageBox.Show("Камера PTZ не поддерживает");
         }
 
         private void задатьТекущееПоложениеКакДомашнееToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Structures.Load()[Selected].GetPTZController.SetHome();
+            Structures.Load()[Selected].GetPTZController().SetHome();
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            comboBox1_SelectedIndexChanged(null, null);
+        }
+
+        private void камерыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panel1.Visible = !panel1.Visible;
+            panel3.Visible = panel1.Visible ? false : true;
+        }
+
+        private void проверкаОбновленийToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var vers = NetworkUpdate.GetVersionServer();
+            if (vers > CurrentVersion.CurrentVersions)
+                MessageBox.Show("Доспуна новая версия. Перезапустите приложение для обновления", "IPCamera Manager", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else
+                MessageBox.Show("У вас уже установлена последняя версия");
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            UpdateStructures();
+            Selected = Selected;
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            panel1.Visible = !panel1.Visible;
+            panel3.Visible = panel1.Visible ? false : true;
+        }
+
+        private void импортToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog opg = new OpenFileDialog();
+            opg.Filter = "Файл настроек (*.micset)|*.micset";
+            opg.Title = "Импорт файла настроек";
+            if (opg.ShowDialog() == DialogResult.OK)
+            {
+                Structures.ReplaceSetting(opg.FileName);
+                UpdateStructures();
+            }
+        }
+
+        private void экспортToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog opg = new SaveFileDialog();
+            opg.Filter = "Файл настроек (*.micset)|*.micset";
+            opg.Title = "Экспорт файла настроек";
+            if (opg.ShowDialog() == DialogResult.OK)
+            {
+                Structures.CopySetting(opg.FileName);
+            }
+        }
+
+        private void общаяИнформацияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutCamera cnv = new AboutCamera(Selected);
+            cnv.Show();
+        }
+
+        private void датаИВремяНаКамереToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var date = Structures.Load()[Selected].GetONVIFController().CameraDateTime.Parse;
+            var message = "Текущее время на камере: " + date;
+            MessageBox.Show(message);
+        }
+
+        private void протоколыКамерыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InfoCamera.CameraProtocols cnv = new InfoCamera.CameraProtocols(Selected);
+            cnv.ShowDialog();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            if (ONVIFPort == 0) return;
+            var protocols = Structures.Load()[Selected].GetONVIFController().NetworkProtocols;
+            HTTPPort = (uint)protocols.Where(tmp => tmp.Name == ODEV.NetworkProtocolType.HTTP).FirstOrDefault().Port.FirstOrDefault();
+            RTSPPort = (uint)protocols.Where(tmp => tmp.Name == ODEV.NetworkProtocolType.RTSP).FirstOrDefault().Port.FirstOrDefault();
+        }
+
+        private void названиеХостаКамерыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var host = Structures.Load()[Selected].GetONVIFController().Hostname;
+            host = "Название хоста камеры: " + host;
+            MessageBox.Show(host);
+        }
+
+        private void пользователиКамерыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InfoCamera.CameraUsers cnv = new InfoCamera.CameraUsers(Selected);
+            cnv.ShowDialog();
+        }
+
+        private void версияONVIFПротоколаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var host = Structures.Load()[Selected].GetONVIFController().Version.ToString();
+            host = "Версия протокола ONVIF: " + host;
+            MessageBox.Show(host);
+        }
+
+        private void возможностиКамерыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InfoCamera.CapCamera cnv = new InfoCamera.CapCamera(Selected);
+            cnv.ShowDialog();
+        }
+
+        private void перезагрузитьКамеруToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var m = MessageBox.Show("Вы действительно хотите перезагрузить устройство " + IP + "?", "Подтвержение перезагрузки камеры", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            var ok = m == DialogResult.Yes;
+            Structures.Load()[Selected].GetONVIFController().Reboot(ok);
+        }
+
+        private void настройкиИзображенияToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            CameraSettings.ONVIfImage cnv = new CameraSettings.ONVIfImage(Selected);
+            cnv.Show();
+        }
+
+        SortedList<DateTime, string> slogs = new SortedList<DateTime, string>();
+
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+            var host = Structures.Load();
+            host = host.Where(tmp => tmp.TypeCamera == Network.Network.TypeCamera.HI3510).ToArray();
+
+            foreach (var item in host)
+            {
+                if (item.IsActive)
+                {
+                    var logs = Downloading.GetLogDevice(item.URLToHTTPPort, item.Name, item.Password);
+                    foreach (IRCut item1 in logs.Nodes.Where(x => x is IRCut))
+                    {
+                        var one = item1.perechod == IRCut.Perehod.Day_Night ? "ИК подсветка включена (ночь)" : "ИК подстветка выключена (день)";
+                        if (!slogs.ContainsKey(item1.date))
+                        {
+                            slogs.Add(item1.date, item.IP, true);
+                            notifyIcon1.ShowBalloonTip(100, "Смена режима отображения", one, ToolTipIcon.Info);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void остановитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Structures.Load()[Selected].GetPTZController().Stop();
+        }
+
+        private void добавитьМониторToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var s = Monitors.MonitorsController.Load().ToList();
+            s.Add(Monitors.MonitorSettings.Null);
+            Monitors.MonitorsController.Save(s.ToArray());
+            GetMonitors();
+        }
+
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            Settings.StaticMembers.ImageSettings.FPS = uint.Parse(toolStripTextBox1.Text);
+        }
+
+        private void toolStripTextBox2_TextChanged(object sender, EventArgs e)
+        {
+            Settings.StaticMembers.ImageSettings.Padding = int.Parse(toolStripTextBox2.Text);
+        }
+
+        private void toolStripTextBox3_TextChanged(object sender, EventArgs e)
+        {
+            Settings.StaticMembers.PTZSettings.Timeout = uint.Parse(toolStripTextBox3.Text);
+        }
+
+        private void управлениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PTZMove cnv = new PTZMove(Selected);
+            cnv.Show();
+        }
+
+        private void toolStripTextBox4_TextChanged(object sender, EventArgs e)
+        {
+            Settings.StaticMembers.PTZSettings.StepTimeout = uint.Parse(toolStripTextBox4.Text);
+        }
+
+        private void внешнегоРекодераToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OthetCoder cnv = new OthetCoder();
+            cnv.Show();
+        }
+
+        private void mplayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowVisible((int)Selected, true);
+        }
+
+        string NM = "";
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            TextInput ti = new TextInput("Введите имя камеры", NM);
+            if(ti.ShowDialog() == DialogResult.OK)
+                NM = ti.ReturnTextNoLine;
         }
     }
     public static class ExtensionMethods
@@ -694,7 +1169,7 @@ namespace IPCamera
             return cropBmp;
         }
         public static Image Resize(this Image image, Size selection)
-        {   
+        {
             image = new Bitmap(image, selection.Width, selection.Height);
             return image;
         }

@@ -13,6 +13,8 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,10 +27,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -67,8 +67,8 @@
     <Reference Include="Emgu.CV.World, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.4.1.1.3497\lib\net35\Emgu.CV.World.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.11.18.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.11.18\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.22.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.22\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="QRCoder, Version=1.3.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\QRCoder.1.3.6\lib\net40\QRCoder.dll</HintPath>
@@ -95,6 +95,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutCamera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutCamera.Designer.cs">
+      <DependentUpon>AboutCamera.cs</DependentUpon>
+    </Compile>
     <Compile Include="AlwaysVisible.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +119,12 @@
     <Compile Include="CameraSettings\Email.Designer.cs">
       <DependentUpon>Email.cs</DependentUpon>
     </Compile>
+    <Compile Include="CameraSettings\ONVIfImage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CameraSettings\ONVIfImage.Designer.cs">
+      <DependentUpon>ONVIfImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="CameraSettings\OSD.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,7 +137,32 @@
     <Compile Include="CameraSettings\P2PCode.Designer.cs">
       <DependentUpon>P2PCode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\ODEV\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\OEVE\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\OIMG\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Connected Services\OPTZ\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\OREC\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\OREP\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -161,6 +198,7 @@
     <Compile Include="Download.Designer.cs">
       <DependentUpon>Download.cs</DependentUpon>
     </Compile>
+    <Compile Include="FFprobe\ffprobe.cs" />
     <Compile Include="FileTreeNode.cs" />
     <Compile Include="GroupV\FFPGV.cs">
       <SubType>Form</SubType>
@@ -185,6 +223,12 @@
     <Compile Include="GroupV\Photo.Designer.cs">
       <DependentUpon>Photo.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImagePlayer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImagePlayer.Designer.cs">
+      <DependentUpon>ImagePlayer.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImageV.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -196,6 +240,30 @@
     </Compile>
     <Compile Include="CameraSettings\IR.Designer.cs">
       <DependentUpon>IR.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InfoCamera\CameraProtocols.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InfoCamera\CameraProtocols.Designer.cs">
+      <DependentUpon>CameraProtocols.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InfoCamera\CameraUsers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InfoCamera\CameraUsers.Designer.cs">
+      <DependentUpon>CameraUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InfoCamera\CapCamera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InfoCamera\CapCamera.Designer.cs">
+      <DependentUpon>CapCamera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Loading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Loading.Designer.cs">
+      <DependentUpon>Loading.cs</DependentUpon>
     </Compile>
     <Compile Include="LogView.cs">
       <SubType>Form</SubType>
@@ -209,15 +277,54 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Monitors\Monitor.cs" />
+    <Compile Include="Monitors\MonitorEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Monitors\MonitorEdit.Designer.cs">
+      <DependentUpon>MonitorEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Monitors\MonitorSettings.cs" />
+    <Compile Include="Monitors\MonitorVisible.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Monitors\MonitorVisible.Designer.cs">
+      <DependentUpon>MonitorVisible.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Network\AutoUpdate\CurrentVersion.cs" />
+    <Compile Include="Network\AutoUpdate\NetworkUpdate.cs" />
+    <Compile Include="Network\AutoUpdate\Updater.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Network\AutoUpdate\Updater.Designer.cs">
+      <DependentUpon>Updater.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Network\AutoUpdate\VersionInfo.cs" />
     <Compile Include="Network\Downloading.cs" />
     <Compile Include="Network\LogFile.cs" />
+    <Compile Include="Network\MAC.cs" />
     <Compile Include="Network\PING.cs" />
     <Compile Include="Network\WebDownload.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ONVIF\CameraDateTime.cs" />
+    <Compile Include="ONVIF\DeviceInformation.cs" />
+    <Compile Include="ONVIF\ImagingResponce.cs" />
+    <Compile Include="ONVIF\MotionDetect.cs" />
     <Compile Include="ONVIF\ONVIFCamera.cs" />
+    <Compile Include="ONVIF\ONVIFVersion.cs" />
+    <Compile Include="ONVIF\StaticMembers\CapabilitiesStatic.cs" />
+    <Compile Include="ONVIF\StaticMembers\ONVIFStatic.cs" />
     <Compile Include="ONVIF\PTZ\PTZController.cs" />
+    <Compile Include="ONVIF\StaticMembers\PTZStatic.cs" />
     <Compile Include="ONVIF\SendResponce.cs" />
+    <Compile Include="ONVIF\StaticMembers\TokensCollection.cs" />
+    <Compile Include="OthetCoder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OthetCoder.Designer.cs">
+      <DependentUpon>OthetCoder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -227,6 +334,27 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Network\RTSPStream.cs" />
+    <Compile Include="PTZMove.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PTZMove.Designer.cs">
+      <DependentUpon>PTZMove.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PTZScenes\Editor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PTZScenes\Editor.Designer.cs">
+      <DependentUpon>Editor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PTZScenes\EditTrigger.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PTZScenes\EditTrigger.Designer.cs">
+      <DependentUpon>EditTrigger.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PTZScenes\PTZCollection.cs" />
+    <Compile Include="PTZScenes\PTZRunning.cs" />
+    <Compile Include="PTZScenes\PTZScene.cs" />
     <Compile Include="Record\ManagerRecords.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -243,10 +371,19 @@
       <DependentUpon>VisibleRecord.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings\Records.cs" />
+    <Compile Include="Settings\StaticMembers\ImageSettings.cs" />
+    <Compile Include="Settings\StaticMembers\ONLINEMember.cs" />
+    <Compile Include="Settings\StaticMembers\PTZSettings.cs" />
     <Compile Include="Settings\Structures.cs" />
     <Compile Include="StringMaster.cs" />
+    <Compile Include="TextInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextInput.Designer.cs">
+      <DependentUpon>TextInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="VievImage.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="VievImage.Designer.cs">
       <DependentUpon>VievImage.cs</DependentUpon>
@@ -262,6 +399,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AboutCamera.resx">
+      <DependentUpon>AboutCamera.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AlwaysVisible.resx">
       <DependentUpon>AlwaysVisible.cs</DependentUpon>
     </EmbeddedResource>
@@ -270,6 +410,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CameraSettings\Email.resx">
       <DependentUpon>Email.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CameraSettings\ONVIfImage.resx">
+      <DependentUpon>ONVIfImage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CameraSettings\OSD.resx">
       <DependentUpon>OSD.cs</DependentUpon>
@@ -295,11 +438,26 @@
     <EmbeddedResource Include="GroupV\Photo.resx">
       <DependentUpon>Photo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ImagePlayer.resx">
+      <DependentUpon>ImagePlayer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ImageV.resx">
       <DependentUpon>ImageV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CameraSettings\IR.resx">
       <DependentUpon>IR.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InfoCamera\CameraProtocols.resx">
+      <DependentUpon>CameraProtocols.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InfoCamera\CameraUsers.resx">
+      <DependentUpon>CameraUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InfoCamera\CapCamera.resx">
+      <DependentUpon>CapCamera.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Loading.resx">
+      <DependentUpon>Loading.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LogView.resx">
       <DependentUpon>LogView.cs</DependentUpon>
@@ -307,16 +465,40 @@
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Monitors\MonitorEdit.resx">
+      <DependentUpon>MonitorEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Monitors\MonitorVisible.resx">
+      <DependentUpon>MonitorVisible.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Network\AutoUpdate\Updater.resx">
+      <DependentUpon>Updater.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OthetCoder.resx">
+      <DependentUpon>OthetCoder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PTZMove.resx">
+      <DependentUpon>PTZMove.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PTZScenes\Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PTZScenes\EditTrigger.resx">
+      <DependentUpon>EditTrigger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Record\ManagerRecords.resx">
       <DependentUpon>ManagerRecords.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Record\VisibleRecord.resx">
       <DependentUpon>VisibleRecord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextInput.resx">
+      <DependentUpon>TextInput.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VievImage.resx">
       <DependentUpon>VievImage.cs</DependentUpon>
@@ -328,6 +510,248 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="app.config" />
+    <None Include="Connected Services\ODEV\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\devicemgmt.wsdl" />
+    <None Include="Connected Services\ODEV\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.BackupFile.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.BinaryData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Certificate.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.CertificateInformation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.CertificateStatus.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.DeviceServiceCapabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.DiscoveryMode.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.DNSInformation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Dot11AvailableNetworks.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Dot11Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Dot11Status.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Dot1XConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.DynamicDNSInformation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.GetSystemUrisResponseExtension.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.HostnameInformation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.IPAddressFilter.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.LocationEntity.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.NetworkGateway.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.NetworkHost.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.NetworkInterface.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.NetworkProtocol.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.NetworkZeroConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.NTPInformation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.RelayOutput.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.RemoteUser.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Scope.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.Service.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.StorageConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.SupportInformation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.SystemDateTime.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.SystemLog.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.SystemLogUri.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\IPCamera.ODEV.User.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ODEV\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\onvif.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ODEV\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OEVE\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OEVE\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OEVE\event.wsdl" />
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.CreatePullPointResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.DestroyPullPointResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.EndpointReferenceType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.GetCurrentMessageResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.GetMessagesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.NotificationMessageHolderType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.PauseSubscriptionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.RenewResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.ResumeSubscriptionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.SubscribeResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.TopicSetType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.UnsubscribeResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\r-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OEVE\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OEVE\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OEVE\WS-BaseNotification.wsdl" />
+    <None Include="Connected Services\OEVE\WS-Resource.wsdl" />
+    <None Include="Connected Services\OEVE\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\ImagingService.wsdl" />
+    <None Include="Connected Services\OIMG\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\IPCamera.OIMG.Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OIMG\IPCamera.OIMG.ImagingOptions20.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OIMG\IPCamera.OIMG.ImagingPreset.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OIMG\IPCamera.OIMG.ImagingSettings20.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OIMG\IPCamera.OIMG.ImagingStatus20.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OIMG\IPCamera.OIMG.MoveOptions20.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OIMG\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\onvif.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OIMG\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Connected Services\OPTZ\b-2.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -381,6 +805,101 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\OPTZ\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.ArrayOfFileProgress.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.GetRecordingJobsResponseItem.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.GetRecordingsResponseItem.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.RecordingConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.RecordingJobConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.RecordingJobStateInformation.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.RecordingOptions.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\IPCamera.OREC.TrackConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREC\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\onvif.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\recording.wsdl" />
+    <None Include="Connected Services\OREC\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREC\xmlmime.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\b-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\bf-2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\IPCamera.OREP.Capabilities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREP\IPCamera.OREP.ReplayConfiguration.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OREP\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\onvif.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\replay.wsdl" />
+    <None Include="Connected Services\OREP\t-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\ws-addr.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\xml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\OREP\xmlmime.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\ServiceReference1\b-2.xsd">
@@ -607,6 +1126,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="camera.ico" />
+    <None Include="Resources\4dc11d17f5292fd463a60aa2bbb41f6a_w200.gif" />
+    <None Include="Resources\a1bb0cc10512df82afd421a77097cb91_w200.gif" />
+    <None Include="Resources\вправо.png" />
+    <None Include="Resources\Вниз.png" />
+    <None Include="Resources\влево.png" />
+    <None Include="Resources\вверх.png" />
     <None Include="Connected Services\ServiceReference1\configuration91.svcinfo" />
     <None Include="Connected Services\ServiceReference1\configuration.svcinfo" />
     <None Include="Connected Services\ServiceReference1\Reference.svcmap">
@@ -616,6 +1141,36 @@
     <None Include="Connected Services\OPTZ\configuration91.svcinfo" />
     <None Include="Connected Services\OPTZ\configuration.svcinfo" />
     <None Include="Connected Services\OPTZ\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\ODEV\configuration91.svcinfo" />
+    <None Include="Connected Services\ODEV\configuration.svcinfo" />
+    <None Include="Connected Services\ODEV\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\OIMG\configuration91.svcinfo" />
+    <None Include="Connected Services\OIMG\configuration.svcinfo" />
+    <None Include="Connected Services\OIMG\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\OREP\configuration91.svcinfo" />
+    <None Include="Connected Services\OREP\configuration.svcinfo" />
+    <None Include="Connected Services\OREP\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\OREC\configuration91.svcinfo" />
+    <None Include="Connected Services\OREC\configuration.svcinfo" />
+    <None Include="Connected Services\OREC\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\OEVE\configuration91.svcinfo" />
+    <None Include="Connected Services\OEVE\configuration.svcinfo" />
+    <None Include="Connected Services\OEVE\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -679,7 +1234,12 @@
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\ODEV\" />
+    <WCFMetadataStorage Include="Connected Services\OEVE\" />
+    <WCFMetadataStorage Include="Connected Services\OIMG\" />
     <WCFMetadataStorage Include="Connected Services\OPTZ\" />
+    <WCFMetadataStorage Include="Connected Services\OREC\" />
+    <WCFMetadataStorage Include="Connected Services\OREP\" />
     <WCFMetadataStorage Include="Connected Services\ServiceReference1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

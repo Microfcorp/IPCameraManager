@@ -102,7 +102,8 @@ namespace IPCamera.Record
             set
             {
                 textBox1.Text = value;
-                label5.Text = "Свободно " + formatFileSize((new DriveInfo(value.Substring(0,1))).AvailableFreeSpace/1024).ToString();
+                if(value != "")
+                    label5.Text = "Свободно " + formatFileSize((new DriveInfo(value.Substring(0,1))).AvailableFreeSpace/1024).ToString();
             }
         }
         public int RecordDuration

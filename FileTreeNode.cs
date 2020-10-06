@@ -24,6 +24,12 @@ namespace IPCamera
             set;
         }
 
+        public String Preview
+        {
+            get;
+            set;
+        }
+
         public FileTreeNode() : base() { }
         public FileTreeNode(string text, FileTreeNode[] children, TypeNode tp, string url) : base(text, children) { this.typeNode = tp; this.URL = url; }
         public FileTreeNode(string text, TypeNode tp, string url) : base(text) { this.typeNode = tp; this.URL = url; }

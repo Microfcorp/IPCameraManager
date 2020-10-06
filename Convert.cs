@@ -28,10 +28,21 @@ namespace IPCamera
         string Final = null;
         decimal FPS;
         readonly List<string> Files = new List<string>();
+        bool AutoConv;
         public Convert()
         {
             InitializeComponent();
             FPS = numericUpDown1.Value;
+        }
+        public Convert(string[] files, bool autostart = false) : this()
+        {
+            GetFiles(files);
+            AutoConv = autostart;
+            if (autostart)
+            {
+                RazhConv = false;
+                StartConvert();
+            }
         }
 
         private void ConvertStart(string path)
@@ -46,7 +57,10 @@ namespace IPCamera
 
                 progressBar1.Value++;
                 if (progressBar1.Value == progressBar1.Maximum)
+                {
                     toolStripStatusLabel1.Text = "Конвертирование завершено";
+                    if (AutoConv) Close();
+                }
             }));
         }
 
@@ -63,9 +77,13 @@ namespace IPCamera
 
             if (File.Exists(Final + "\\" + pathname + "_ff.mkv"))
             {
-                MessageBox.Show("Файл уже существует. Удалите файл и повторите попытку позднее");
-                toolStripStatusLabel1.Text = "Ошибка конвертирования";
-                return;
+                File.Delete(Final + "\\" + pathname + "_ff.mkv");
+                if (File.Exists(Final + "\\" + pathname + "_ff.mkv"))
+                {
+                    MessageBox.Show("Файл уже существует. Ошибка автоматического удаления. Удалите файл и повторите попытку позднее");
+                    toolStripStatusLabel1.Text = "Ошибка конвертирования";
+                    return;
+                }
             }
 
             /*Console.WriteLine(PFfmpeg, FPS.ToString().Replace(',','.'),
@@ -124,7 +142,7 @@ namespace IPCamera
             }
             catch { }
 
-            if(IsPlay) Process.Start("ffplay.exe", checkedListBox1.Items[Selected] + "_ff.mkv -x 640 -y 360");
+            if(IsPlay) Process.Start("mplayer.exe", checkedListBox1.Items[Selected] + "_ff.mkv -x 640 -y 360");
         }
 
         private void GetFiles(string directory)
@@ -200,7 +218,7 @@ namespace IPCamera
             List<string> SelctedFile = new List<string>();
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {
-                if (checkedListBox1.GetItemChecked(i))
+                if (checkedListBox1.GetItemChecked(i) || AutoConv)
                     SelctedFile.Add(checkedListBox1.Items[i].ToString());
             }
 
@@ -283,7 +301,7 @@ namespace IPCamera
         {
             Selected = checkedListBox1.SelectedIndex;
         }
-        bool IsPlay = false;
+        public bool IsPlay = false;
 
         public bool IsVBR1 { get; set; } = true;
 

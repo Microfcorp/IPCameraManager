@@ -23,7 +23,14 @@ namespace IPCamera
 
         bool IsHigh = true;
 
-        public Visible(uint Selected)
+        /// <summary>
+        /// Возникает при перезагрузке потока
+        /// </summary>
+        public event EventHandler Reload;
+
+        bool ump;
+
+        public Visible(uint Selected, bool ump)
         {
             InitializeComponent();
             Setting = Settings.Structures.Load()[Selected];
@@ -31,45 +38,96 @@ namespace IPCamera
             Application.EnableVisualStyles();
             this.DoubleBuffered = true;
             BackColor = Color.Blue;
+            this.ump = ump;
         }
 
         void Play()
-        {          
+        {
             if (s != null && !s.HasExited) s.Kill();
             Setting = Settings.Structures.Load()[Selected];
+            Thread th = new Thread(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        if (!s.HasExited && s.Id.IsFocusWindow() && Setting.GetPTZController().IsSuported)
+                            if (Keys.Left.GetAsyncKeyState() != 0)
+                                Setting.GetPTZController().CountiniousMove(ONVIF.PTZ.PTZParameters.Vector.LEFT);
+                            else if (Keys.Right.GetAsyncKeyState() != 0)
+                                Setting.GetPTZController().CountiniousMove(ONVIF.PTZ.PTZParameters.Vector.RIGHT);
+                            else if (Keys.Up.GetAsyncKeyState() != 0)
+                                Setting.GetPTZController().CountiniousMove(ONVIF.PTZ.PTZParameters.Vector.UP);
+                            else if (Keys.Down.GetAsyncKeyState() != 0)
+                                Setting.GetPTZController().CountiniousMove(ONVIF.PTZ.PTZParameters.Vector.DOWN);
+                        Thread.Sleep(100);
+                    }
+                    catch { };
+                    Thread.Sleep(100);
+                }
+            });
 
-            s = new Process();
-            s.StartInfo.FileName = "ffplay.exe";
-            s.StartInfo.Arguments = String.Format(IsHigh ? Setting.GetRTSPFirstONVIF : Setting.GetRTSPSecondONVIF)
-                + " -x 640 -y 360";
-            s.StartInfo.UseShellExecute = false;
-            s.StartInfo.CreateNoWindow = true;
-            //s.StartInfo.RedirectStandardError = true;
-            s.EnableRaisingEvents = true;
-            s.StartInfo.RedirectStandardError = true;
-            //s.OutputDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");
-            //s.ErrorDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");      
+            if (!ump)
+            {               
+                s = new Process();
+                s.StartInfo.FileName = "ffplay.exe";
+                s.StartInfo.Arguments = String.Format(IsHigh ? Setting.GetRTSPFirstONVIF : Setting.GetRTSPSecondONVIF)
+                    + " -x 640 -y 360";
+                s.StartInfo.UseShellExecute = false;
+                s.StartInfo.CreateNoWindow = true;
+                //s.StartInfo.RedirectStandardError = true;
+                s.EnableRaisingEvents = true;
+                s.StartInfo.RedirectStandardError = true;
+                //s.OutputDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");
+                //s.ErrorDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");      
 
-            s.Exited += (o, e) => { BackColor = Color.Red;};
+                s.Exited += (o, e) => { BackColor = Color.Red; try { th.Abort(); } catch { } };
 
-            s.Start();
-            s.BeginErrorReadLine();
+                s.Start();
+                s.BeginErrorReadLine();
 
-            this.StopFlashing();
+                this.StopFlashing();
 
-            s.ErrorDataReceived += (o, e) => { if (GroupV.FFPGV.IsRunFFPLAY(e.Data)) try { if (InvokeRequired) Invoke(new Action(() => {  BackColor = Color.FromArgb(255, 192, 192); })); } catch { } };                      
+                s.ErrorDataReceived += (o, e) => { if (GroupV.FFPGV.IsRunFFPLAY(e.Data)) try { if (InvokeRequired) Invoke(new Action(() => { BackColor = Color.FromArgb(255, 192, 192); })); } catch { } };
 
-            Thread.Sleep(200); // you need to wait/check the process started, then...
+                if (Setting.GetPTZController().IsSuported) th.Start();
 
-            // child, new parent
-            // make 'this' the parent of ffmpeg (presuming you are in scope of a Form or Control)
-            s.MainWindowHandle.SetParent(this.Handle);
-            s.MainWindowHandle.ShowWindow((int)CommonFunctions.nCmdShow.SW_HIDE);
+                Thread.Sleep(200); // you need to wait/check the process started, then...
 
-            // window, x, y, width, height, repaint
-            // move the ffplayer window to the top-left corner and set the size to 320x280
-            //MoveWindow(s.MainWindowHandle, 0, 0, 320, 280, true);
-            //s.MainWindowHandle.SetWindowLong((int)CommonFunctions.WindowLongFlags.GWL_STYLE, WindowStyles.WS_VISIBLE);
+                // child, new parent
+                // make 'this' the parent of ffmpeg (presuming you are in scope of a Form or Control)
+                s.MainWindowHandle.SetParent(this.Handle);
+                s.MainWindowHandle.ShowWindow((int)CommonFunctions.nCmdShow.SW_HIDE);
+
+                FormClosing += (o, e) => th.Abort();
+
+                // window, x, y, width, height, repaint
+                // move the ffplayer window to the top-left corner and set the size to 320x280
+                //MoveWindow(s.MainWindowHandle, 0, 0, 320, 280, true);
+                //s.MainWindowHandle.SetWindowLong((int)CommonFunctions.WindowLongFlags.GWL_STYLE, WindowStyles.WS_VISIBLE);
+                Reload?.Invoke(this, new EventArgs());
+            }
+            else
+            {
+                s = new Process();
+                s.StartInfo.FileName = "mplayer.exe";
+                s.StartInfo.Arguments = String.Format(IsHigh ? Setting.GetRTSPFirstONVIF : Setting.GetRTSPSecondONVIF)
+                    + " -dumpfile file.txt -mc 10 -nofs -x 640 -y 360";
+                s.StartInfo.UseShellExecute = false;
+                s.StartInfo.CreateNoWindow = true;
+                //s.StartInfo.RedirectStandardError = true;
+                s.EnableRaisingEvents = true;
+                s.StartInfo.RedirectStandardOutput = true;
+                s.Start();
+                s.BeginOutputReadLine();
+                this.StopFlashing();
+
+                if (Setting.GetPTZController().IsSuported) th.Start();
+
+                s.OutputDataReceived += (o, e) => { if (GroupV.FFPGV.IsRunFFPLAY(e.Data)) try { if (InvokeRequired) Invoke(new Action(() => { BackColor = Color.FromArgb(255, 192, 192); })); } catch { } };
+
+                s.Exited += (o, e) => { BackColor = Color.Red; th.Abort(); };
+            }
         }
 
         private void Visible_Load(object sender, EventArgs e)

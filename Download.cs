@@ -13,21 +13,25 @@ using System.Net;
 using System.IO;
 using DBFiles;
 using System.Diagnostics;
+using System.Threading;
 
 namespace IPCamera
 {
     public partial class Download : Form
     {
         Structures setting;
+        Loading ld = new Loading();
         public Download(uint Selected)
         {
             InitializeComponent();
             setting = Structures.Load()[Selected];
+            //ld.FormClosed += (a, b) => { if (b.CloseReason == CloseReason.UserClosing) Invoke(new Action(() => Close())); };
         }
 
-        FileTreeNode[] GetServer(string startpath = "")
+        FileTreeNode[] GetServer(string startpath = "", bool showdownload = false)
         {
             Log = "Идет загрузка...";
+            if(showdownload) new Thread(() => ld.ShowDialog()).Start();
 
             var web = (Downloading.GetHTML(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + startpath, setting.Name, setting.Password));
 
@@ -53,14 +57,15 @@ namespace IPCamera
                     //Console.WriteLine(date);
                     //Console.WriteLine(type);
                     //Console.WriteLine("----------");
-
+                    
                     FileTreeNode tr;
 
                     if (size == "[DIRECTORY]")
                     {
-                        tr = new FileTreeNode(path, GetServer(startpath + "" + path), FileTreeNode.TypeNode.Directory, startpath + "" + path);
+                        tr = new FileTreeNode(path, /*GetServer(startpath + "" + path),*/ FileTreeNode.TypeNode.Directory, startpath + "" + path);
                         tr.SelectedImageKey = "f";
                         tr.ImageKey = "f";
+                        tr.Nodes.Add("");
                     }
                     else
                     {
@@ -73,7 +78,7 @@ namespace IPCamera
                     list.Add(tr);
                 }
             }
-
+            if (showdownload) { ld.Invoke(new Action(() => ld.Close())); Log = "Загрузка завершена"; }
             return list.ToArray();
         }
 
@@ -93,6 +98,7 @@ namespace IPCamera
         {
             Log = "Идет загрузка...";
             treeView1.Nodes.Clear();
+            new Thread(() => ld.ShowDialog()).Start();
 
             var DeviceInfo = Downloading.GetDeviceParams(setting.URLToHTTPPort, setting.Name, setting.Password);
             label1.Text = "Свободно места на SD (" + formatFileSize(int.Parse(DeviceInfo["sdfreespace"])) + ") из " + formatFileSize(int.Parse(DeviceInfo["sdtotalspace"]));
@@ -135,8 +141,9 @@ namespace IPCamera
                     treeView1.Nodes.Add(tr);
                 }
             }
-
-            backgroundWorker1.RunWorkerAsync(DateTime.Now - DateTime.Parse(DeviceInfo["startdate"]));
+            if (backgroundWorker1.IsBusy) backgroundWorker1.CancelAsync();
+            if (!backgroundWorker1.IsBusy) backgroundWorker1.RunWorkerAsync(DateTime.Now - DateTime.Parse(DeviceInfo["startdate"]));
+            ld.Invoke(new Action(() => ld.Close()));
             Log = "Загрузка завершена";
         }
 
@@ -206,7 +213,7 @@ namespace IPCamera
         }
 
         private void Download_Load(object sender, EventArgs e)
-        {
+        {           
             timer1.Start();
             treeView1.ImageList = new ImageList();
             treeView1.ImageList.Images.Add("f", Properties.Resources.of);
@@ -216,7 +223,7 @@ namespace IPCamera
         private void timer1_Tick(object sender, EventArgs e)
         {
             timer1.Stop();
-            UpdateServer();
+            UpdateServer();        
         }
 
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
@@ -272,8 +279,8 @@ namespace IPCamera
             {
                 Log = "Скачивание файлов завершено";
                 //progressBar1.Style = ProgressBarStyle.Blocks;
-                //progressBar1.Value = progressBar1.Minimum;
-                progressBar1.Style = ProgressBarStyle.Marquee;
+                progressBar1.Value = progressBar1.Minimum;
+                //progressBar1.Style = ProgressBarStyle.Marquee;
                 //MessageBox.Show("Скачивание завершено");
             }
         }
@@ -376,6 +383,7 @@ namespace IPCamera
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             selected = (FileTreeNode)e.Node;
+            просмотрToolStripMenuItem.Enabled = selected.typeNode == FileTreeNode.TypeNode.File /*&& selected.URL.EndsWith(".jpg")*/;
         }
         //bool IsPlay = false;
         private void смотретьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -391,5 +399,70 @@ namespace IPCamera
             BtnDownload(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + selected.URL, path);
             
         }
+
+        private void просмотрToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selected.typeNode == FileTreeNode.TypeNode.File && selected.URL.EndsWith(".jpg"))
+            {
+                var url = DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + selected.URL;
+                var img = Downloading.GetImageWitchAutorized(url, setting.Login, setting.Password);
+                ImagePlayer ip = new ImagePlayer(img, url);
+                ip.Show();
+            }
+            else if(selected.typeNode == FileTreeNode.TypeNode.File && !selected.URL.EndsWith(".jpg"))
+            {
+                new Thread(() => ld.ShowDialog()).Start();
+                var url = DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + selected.URL;
+                var path = Downloading.DownloadFile(url, setting.Name, setting.Password, Environment.GetFolderPath(Environment.SpecialFolder.MyVideos, Environment.SpecialFolderOption.Create) + "\\IPCamera\\");
+                if (File.Exists(path + ".h264"))
+                    File.Delete(path + ".h264");
+                File.Move(path, path + ".h264");
+                Convert cnv = new Convert(new string[] { path + ".h264" }, true);
+                cnv.Show();
+                cnv.IsPlay = true;
+                ld.Invoke(new Action(() => ld.Close()));
+            }
+        }
+
+        private void скопироватьСсылкуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + selected.URL);
+        }
+
+        private void treeView1_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            var nod = e.Node as FileTreeNode;
+            if (nod.Nodes[0].Text == "")
+            {
+                nod.Nodes.Clear();
+                nod.Nodes.AddRange(GetServer(nod.URL, true));
+            }
+        }
     }
 }
+
+                    /*if (path.EndsWith(".db"))
+                    {
+                        FileTreeNode tr;
+                        tr = new FileTreeNode(path, FileTreeNode.TypeNode.File, startpath + "" + path);
+                        tr.SelectedImageKey = "v";
+                        tr.ImageKey = "v";
+                        tr.ContextMenuStrip = contextMenuStrip1;
+                        tr.ToolTipText = date + " (" + (size) + ")";
+                        list.Add(tr);
+                        Downloading.DownloadFile(DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + startpath + "/" + path, setting.Name, setting.Password, Environment.CurrentDirectory + "\\" + size);
+                        var fil = DBFile.Read(Environment.CurrentDirectory + "\\" + size + "\\" + path);
+                        foreach (var abc in fil)
+                        {
+                            FileTreeNode rt;
+                            rt = new FileTreeNode(abc.FileName, FileTreeNode.TypeNode.File, DownloadingPaths.ToPath(setting.URLToHTTPPort) + DownloadingPaths.SD + "/" + abc.HTTPPath);
+                            rt.SelectedImageKey = "v";
+                            rt.ImageKey = "v";
+                            rt.ContextMenuStrip = contextMenuStrip1;
+                            rt.ToolTipText = abc.FileNameNoneExtension + " (" + (abc.Type) + ")";
+                            list.Add(rt);
+                        }
+
+                        File.Delete(Environment.CurrentDirectory + "\\" + size + "\\" + path);
+                        Directory.Delete(Environment.CurrentDirectory + "\\" + size);
+                    }*/

@@ -8,6 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.ServiceModel.Discovery;
 using System.Text;
 using System.Xml;
+using IPCamera.ONVIF.PTZ;
+using IPCamera.ONVIF;
+using IPCamera.Settings.StaticMembers;
 
 namespace IPCamera.Settings
 {
@@ -23,7 +26,15 @@ namespace IPCamera.Settings
         /// Адрес камеры
         /// </summary>
         //public Uri Uri;
+        /// <summary>
+        /// Имя пользователя
+        /// </summary>
+        public string MAC;
 
+        /// <summary>
+        /// Имя пользователя
+        /// </summary>
+        public string NameCamera;
         /// <summary>
         /// Имя пользователя
         /// </summary>
@@ -62,6 +73,11 @@ namespace IPCamera.Settings
         public decimal ValueMD;
 
         /// <summary>
+        /// Имеется ли в камере PTZ
+        /// </summary>
+        public bool PTZ;
+
+        /// <summary>
         /// Зона детектора движения
         /// </summary>
         public Rectangle ZoneDetect;
@@ -79,7 +95,7 @@ namespace IPCamera.Settings
         /// <summary>
         /// Нулевая структура
         /// </summary>
-        public static Structures Null = new Structures("localhost","","",80,554,8080,0,1, 270000, new Rectangle(0,0,10,10), Network.Network.TypeCamera.HI3510, Record.Records.Default);
+        public static Structures Null = new Structures("localhost","","",80,554,8080,0,1,false, 270000, new Rectangle(0,0,10,10), Network.Network.TypeCamera.HI3510, Record.Records.Default, "Defalt", "");
 
         /// <summary>
         /// Обыявление структуры настроек
@@ -93,7 +109,7 @@ namespace IPCamera.Settings
         /// <param name="rt">Зона детектора движения</param>
         /// <param name="typeCamera">Тип чипа камеры</param>
         /// <param name="records">Структура для записи</param>
-        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort, uint ONVIFPort, int SelectedFirstProfile, int SelectedSecondProfile, decimal vdm, Rectangle rt, Network.Network.TypeCamera typeCamera, Record.Records records)
+        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort, uint ONVIFPort, int SelectedFirstProfile, int SelectedSecondProfile, bool ptz, decimal vdm, Rectangle rt, Network.Network.TypeCamera typeCamera, Record.Records records, string NameCamera, string MAC)
         {
             this.IP = IP;
             //this.Uri = new Uri(IP);
@@ -108,37 +124,10 @@ namespace IPCamera.Settings
             this.ONVIFPort = ONVIFPort;
             this.SelectFirstProfile = SelectedFirstProfile;
             this.SelectSecondProfile = SelectedSecondProfile;
-
-            //this.MediaTokens = new string[] { "" };
-            //this.PTZTokens = "";
-
-            /*if (!IsActive)
-            {
-                this.MediaTokens = new string[] { "" };
-                this.PTZTokens = "";
-                return;
-            }
-
-            var ou = "http://" + IP + ":" + ONVIFPort;
-            var pr = ONVIF.SendResponce.GetProfiles(ou, Name, Password);
-            this.MediaTokens = pr.Select(tmp => tmp.token).ToArray();
-            this.PTZTokens = pr.First().PTZConfiguration.token;*/
-            //_Load();
+            this.PTZ = ptz;
+            this.NameCamera = NameCamera;
+            this.MAC = MAC;
         }
-
-       /* private void _Load()
-        {
-            if (!IsActive)
-            {
-                this.MediaTokens = new string[] { "" };
-                this.PTZTokens = "";
-                return;
-            }
-
-            var pr = ONVIF.SendResponce.GetProfiles(GetONVIF, Name, Password);
-            this.MediaTokens = pr.Select(tmp => tmp.token).ToArray();
-            this.PTZTokens = pr.First().PTZConfiguration.token;
-        }*/
 
         /// <summary>
         /// Загрузить настройки из фалйа
@@ -154,10 +143,6 @@ namespace IPCamera.Settings
                 using (FileStream fs = File.OpenRead(path))
                 {
                     var t2 = (Structures[])bf.Deserialize(fs);
-                    /*for (int i = 0; i < t2.Length; i++)
-                    {
-                        t2[i] = new Structures(t2[i].IP, t2[i].Name, t2[i].Password, t2[i].HTTPPort, t2[i].RTSPPort, t2[i].ONVIFPort, t2[i].SelectFirstProfile, t2[i].SelectSecondProfile, t2[i].ValueMD, t2[i].ZoneDetect, t2[i].TypeCamera, t2[i].Records);
-                    }*/
                     return t2;
                 }
             }
@@ -170,7 +155,7 @@ namespace IPCamera.Settings
         /// <returns></returns>
         public static Structures[] Load()
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\setting.dat";
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\setting.dat";
             return Load(path);
         }
         /// <summary>
@@ -192,8 +177,8 @@ namespace IPCamera.Settings
         /// <param name="str">Структура настроек</param>
         public static void Save(Structures[] str)
         {
-            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\");
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\setting.dat";
+            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\");
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\setting.dat";
             Save(str, path);
         }
         /// <summary>
@@ -201,7 +186,7 @@ namespace IPCamera.Settings
         /// </summary>
         public static void DeleteSetting()
         {
-            DeleteSetting(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofCorp\\IPCameraManager\\setting.dat");
+            DeleteSetting(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\setting.dat");
         }
         /// <summary>
         /// Удалить файл настроек
@@ -212,7 +197,30 @@ namespace IPCamera.Settings
             if (File.Exists(path))
                 File.Delete(path);
         }
-        
+        /// <summary>
+        /// Импортирует файл настроек
+        /// </summary>
+        public static void ReplaceSetting(string newpath)
+        {
+            ReplaceSetting(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\setting.dat", newpath);
+        }
+        /// <summary>
+        /// Импортирует файл настроек
+        /// </summary>
+        /// <param name="path">Путь к файлу</param>
+        public static void ReplaceSetting(string path, string newpath)
+        {
+            if (File.Exists(newpath))
+                File.Copy(newpath, path, true);
+        }
+        /// <summary>
+        /// Копирует файл настроек
+        /// </summary>
+        public static void CopySetting(string newpath)
+        {
+            ReplaceSetting(newpath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\setting.dat");
+        }
+
         /// <summary>
         /// Логин камеры
         /// </summary>
@@ -228,8 +236,21 @@ namespace IPCamera.Settings
         {
             get
             {
-                return Network.Ping.IsOKServer(GetHTTP, 900);
+                return Network.Ping.IsOKServer(GetHTTP, 500);
+                //return Network.Ping.IsOnline(IP, (int)HTTPPort);
+                /*if (this.ContainsONLINE())
+                    return this.GetONLINE();
+                else this.AddONLINE(Network.Ping.IsOKServer(GetHTTP, 500));
+                return this.GetONLINE();*/
             }
+        }
+
+        /// <summary>
+        /// Доступна ли камера
+        /// </summary>
+        public bool IsActivePro(int timeout = 500)
+        {
+            return Network.Ping.IsOKServer(GetHTTP, timeout);
         }
         /// <summary>
         /// Возвращает базу для HTTP запроса
@@ -373,36 +394,53 @@ namespace IPCamera.Settings
                 return ONVIF.SendResponce.GetSnapsotURL(this, SelectSecondProfile);
             }
         }
+
         /// <summary>
         /// Создает на основании данной камеры контроллер PTZ
         /// </summary>
-        public ONVIF.PTZ.PTZController GetPTZController
+        public PTZController GetPTZController()
         {
-            get => new ONVIF.PTZ.PTZController(this);
+            if (this.ContainsPTZ())
+                return this.GetPTZ();
+            else this.AddPTZ();
+            return this.GetPTZ();
         }
 
         /// <summary>
         /// Создает на основании данной камеры контроллер ONVIF
         /// </summary>
-        public ONVIF.ONVIFCamera GetONVIFController
+        public ONVIFCamera GetONVIFController()
         {
-            get => new ONVIF.ONVIFCamera(this);
+            if (this.ContainsONVIF())
+                return ONVIFStatic.GetONVIF(this);
+            else this.AddONVIF();
+            return ONVIFStatic.GetONVIF(this);
         }
-        public string[] MediaTokens
+
+        /// <summary>
+        /// Массив доступных токенов для медии
+        /// </summary>
+        public string[] GetMediaTokens()
         {
-            get
-            {
-                var pr = ONVIF.SendResponce.GetProfiles(GetONVIF, Name, Password);
-                return pr.Select(tmp => tmp.token).ToArray();
-            }
+            if (this.ContainsToken())
+                return this.GetToken().Media;
+            else this.AddToken();
+            return this.GetToken().Media;
         }
-        public string PTZTokens
+
+        /// <summary>
+        /// Токен для PTZ управления
+        /// </summary>
+        public string GetPTZTokens()
         {
-            get
-            {
-                var pr = ONVIF.SendResponce.GetProfiles(GetONVIF, Name, Password);
-                return pr.First().PTZConfiguration.token; ;
-            }            
+            /*if (this.ContainsToken())
+                return this.GetToken().PTZ;
+            else this.AddToken();
+            return this.GetToken().PTZ;*/
+            if (this.ContainsToken())
+                return this.GetToken().Media[0];
+            else this.AddToken();
+            return this.GetToken().Media[0];
         }
     }
 }

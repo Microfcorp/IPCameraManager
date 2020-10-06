@@ -54,6 +54,9 @@
             this.button4 = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.скачатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.скопироватьСсылкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.просмотрToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -67,6 +70,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeView1.CheckBoxes = true;
             this.treeView1.FullRowSelect = true;
+            this.treeView1.Indent = 15;
             this.treeView1.Location = new System.Drawing.Point(9, 12);
             this.treeView1.Name = "treeView1";
             this.treeView1.PathSeparator = "/";
@@ -74,6 +78,7 @@
             this.treeView1.Size = new System.Drawing.Size(402, 345);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
+            this.treeView1.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterExpand);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
             // button1
@@ -281,17 +286,39 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.скачатьToolStripMenuItem});
+            this.скачатьToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.скопироватьСсылкуToolStripMenuItem,
+            this.просмотрToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(119, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(190, 76);
             this.contextMenuStrip1.Text = "Файл";
             // 
             // скачатьToolStripMenuItem
             // 
             this.скачатьToolStripMenuItem.Name = "скачатьToolStripMenuItem";
-            this.скачатьToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
+            this.скачатьToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.скачатьToolStripMenuItem.Text = "Скачать";
             this.скачатьToolStripMenuItem.Click += new System.EventHandler(this.скачатьToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(186, 6);
+            // 
+            // скопироватьСсылкуToolStripMenuItem
+            // 
+            this.скопироватьСсылкуToolStripMenuItem.Name = "скопироватьСсылкуToolStripMenuItem";
+            this.скопироватьСсылкуToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.скопироватьСсылкуToolStripMenuItem.Text = "Скопировать ссылку";
+            this.скопироватьСсылкуToolStripMenuItem.Click += new System.EventHandler(this.скопироватьСсылкуToolStripMenuItem_Click);
+            // 
+            // просмотрToolStripMenuItem
+            // 
+            this.просмотрToolStripMenuItem.Name = "просмотрToolStripMenuItem";
+            this.просмотрToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.просмотрToolStripMenuItem.Text = "Просмотр";
+            this.просмотрToolStripMenuItem.Click += new System.EventHandler(this.просмотрToolStripMenuItem_Click);
             // 
             // Download
             // 
@@ -351,5 +378,8 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem скачатьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem просмотрToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem скопироватьСсылкуToolStripMenuItem;
     }
 }

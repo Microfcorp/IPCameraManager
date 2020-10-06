@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using IPCamera.DLL;
+using System.IO;
 
 namespace IPCamera
 {
@@ -21,6 +22,15 @@ namespace IPCamera
             InitializeComponent();
             structures = Structures.Load()[sel];
             MouseWheel += AlwaysVisible_MouseWheel;
+            vievImage1.Start(structures);
+
+            try
+            {
+                vievImage1.contextMenuStrip1.Items.Add(new ToolStripSeparator());
+                vievImage1.contextMenuStrip1.Items.AddRange(contextMenuStrip1.Items);
+            }
+            catch { };
+            //vievImage1.contextMenuStrip1 = contextMenuStrip1;
         }
 
         private void AlwaysVisible_MouseWheel(object sender, MouseEventArgs e)
@@ -33,16 +43,12 @@ namespace IPCamera
         {
             Handle.SetWindowPos(new IntPtr(CommonFunctions.HWND_TOPMOST),
             0, 0, 0, 0,
-            CommonFunctions.SWP_NOMOVE | CommonFunctions.SWP_NOSIZE);
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            pictureBox1.ImageLocation = structures.GetPhotoStream;
+            CommonFunctions.SWP_NOMOVE | CommonFunctions.SWP_NOSIZE);         
         }
 
         private int x = 0;
         private int y = 0;
+
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             //if(e.Button == MouseButtons.Left)
@@ -65,9 +71,21 @@ namespace IPCamera
             if (e.Button == MouseButtons.Left)
             {
                 isDown = true;
-                x = (DesktopLocation).X;
-                y = (DesktopLocation).Y;
+                x = (e.Location).X;
+                y = (e.Location).Y;
             }
+        }
+
+        private void закрытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void сделатьСнимокToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var file = DateTime.Now.ToString().Replace(":", "-") + ".jpg";
+            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\IP Camera\\" + structures.IP);
+            vievImage1.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\IP Camera\\" + structures.IP + "\\" + file);
         }
     }
 }

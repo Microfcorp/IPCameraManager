@@ -54,8 +54,9 @@ namespace IPCamera.ONVIF.PTZ
         public PTZController(Structures camera)
         {
             set = camera;
+            Speed = 4;
             //th.Start(this);
-            issup = _IsSuported;
+            issup = set.IsActive && set.PTZ;
         }
         /// <summary>
         /// Скорость поворота камеры
@@ -77,11 +78,26 @@ namespace IPCamera.ONVIF.PTZ
                     PanTilt = new Vector2D
                     {
                         x = Speed,
-                        y = Speed
-                    }
+                        y = Speed,
+                        //space = "http://www.onvif.org/ver10/tptz/PanTiltSpaces/GenericSpeedSpace",
+                    },
+                    Zoom = new Vector1D() { x = 0, },
                 };
                 return p;
             }
+        }
+        private PTZSpeed CreatePTZSpeed(PTZParameters.Vector vector, float speed = 0.5f)
+        {
+            var p = new PTZSpeed
+            {
+                PanTilt = new Vector2D() { /*space = "http://www.onvif.org/ver10/tptz/PanTiltSpaces/GenericSpeedSpace",*/ },
+                //Zoom = new Vector1D() { x = 0, },                
+            };
+            if (vector == PTZParameters.Vector.UP) p.PanTilt.y = -speed;
+            else if (vector == PTZParameters.Vector.DOWN) p.PanTilt.y = speed;
+            else if (vector == PTZParameters.Vector.LEFT) p.PanTilt.x = -speed;
+            else if (vector == PTZParameters.Vector.RIGHT) p.PanTilt.x = speed;
+            return p;
         }
         /// <summary>
         /// Возвращает вектор движения и количество шагов
@@ -89,29 +105,60 @@ namespace IPCamera.ONVIF.PTZ
         /// <param name="vector">Вектор направления</param>
         /// <param name="steep">Количество шагов</param>
         /// <returns></returns>
-        public PTZVector GetVector(PTZParameters.Vector vector, float steep = 5f)
+        public PTZVector GetVector(PTZParameters.Vector vector, float steep = 1f)
         {
             var p = new PTZVector
             {
-                PanTilt = new Vector2D()
+                PanTilt = new Vector2D() { space = "http://www.onvif.org/ver10/tptz/PanTiltSpaces/TranslationGenericSpace", },      
+                Zoom = new Vector1D() { x = 0,}, 
             };
-            if (vector == PTZParameters.Vector.UP) p.PanTilt.x = steep;
-            else if (vector == PTZParameters.Vector.DOWN) p.PanTilt.x = -steep;
-            else if (vector == PTZParameters.Vector.LEFT) p.PanTilt.x = -steep;
-            else if (vector == PTZParameters.Vector.RIGHT) p.PanTilt.x = steep;
+            if (vector == PTZParameters.Vector.UP) p.PanTilt.y = -steep;
+            if (vector == PTZParameters.Vector.DOWN) p.PanTilt.y = steep;
+            if (vector == PTZParameters.Vector.LEFT) p.PanTilt.x = -steep;
+            if (vector == PTZParameters.Vector.RIGHT) p.PanTilt.x = steep;
             return p;
         }
 
         /// <summary>
-        /// Производит перемещение по указаному вектору с заданым колисеством шагов
+        /// Производит перемещение по указаному вектору с заданым количеством шагов
         /// </summary>
         /// <param name="vector">Направление движения</param>
         /// <param name="steep">Количество шагов</param>
-        public string Move(PTZParameters.Vector vector, float steep = 5f)
+        public string Move(PTZParameters.Vector vector, float steep = 1f)
         {
             try
             {
                 ONVIF.SendResponce.RotatePTZ(set, GetVector(vector, steep), PTZSpeed);
+                return "OK";
+            }
+            catch { return "Fail"; }
+        }
+
+        /// <summary>
+        /// Производит асинхронное перемещение по указаному вектору с заданым количеством шагов
+        /// </summary>
+        /// <param name="vector">Направление движения</param>
+        /// <param name="steep">Количество шагов</param>
+        public string AsyncCountiniousMove(PTZParameters.Vector vector, float steep = 1f, float speed = 0.01000001f) //0.10000001f
+        {
+            try
+            {
+                ONVIF.SendResponce.AsyncCountinuousRotatePTZ(set, CreatePTZSpeed(vector, speed));
+                return "OK";
+            }
+            catch { return "Fail"; }
+        }
+
+        /// <summary>
+        /// Производит перемещение по указаному вектору с заданым количеством шагов, с блокировкой потока на время выполнения
+        /// </summary>
+        /// <param name="vector">Направление движения</param>
+        /// <param name="steep">Количество шагов</param>
+        public string CountiniousMove(PTZParameters.Vector vector, int timeout = -1, float steep = 1f, float speed = 0.01000001f) //0.10000001f
+        {
+            try
+            {
+                ONVIF.SendResponce.CountinuousRotatePTZ(set, CreatePTZSpeed(vector, speed), timeout);
                 return "OK";
             }
             catch { return "Fail"; }
@@ -138,6 +185,14 @@ namespace IPCamera.ONVIF.PTZ
         }
 
         /// <summary>
+        /// Посылает комманду остановки на камеру
+        /// </summary>
+        public void Stop()
+        {
+            ONVIF.SendResponce.PTZStop(set);
+        }
+
+        /// <summary>
         /// Устанавливает текущую позицию, как домашнюю
         /// </summary>
         public void SetHome()
@@ -157,7 +212,7 @@ namespace IPCamera.ONVIF.PTZ
             }
         }
 
-        readonly Thread th = new Thread(new ParameterizedThreadStart(_IS));
+        //readonly Thread th = new Thread(new ParameterizedThreadStart(_IS));
 
         static object locker = new object();
         private static void _IS(object p)
@@ -169,12 +224,13 @@ namespace IPCamera.ONVIF.PTZ
         /// <summary>
         /// Определяет поддержку PTZ
         /// </summary>
-        public bool _IsSuported
+        private bool _IsSuported
         {
             get
             {
                 try
                 {
+                    //return false;
                     if (!SendResponce.PTZSupport(set)) return false;
 
                     var pred = Position;

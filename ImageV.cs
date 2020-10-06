@@ -24,7 +24,6 @@ namespace IPCamera
                 return (int)(((float)1 / (float)trackBar1.Value) * 1000);
             }
         }
-        string pathtophoto;
         public ImageV(uint Selected)
         {           
             InitializeComponent();
@@ -36,31 +35,23 @@ namespace IPCamera
 
             _btn1xScale1 = trackBar1.Location.X / (float)this.Width;
             _btn1yScale1 = trackBar1.Location.Y / (float)this.Height;
-
-            pathtophoto = structures.GetPhotoStreamSecondONVIF;
         }
 
         private void ImageV_Load(object sender, EventArgs e)
         {
-            timer1.Interval = FPSMillis;
+            vievImage1.Start(structures, trackBar1.Value);
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            timer1.Interval = FPSMillis;
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (structures.TypeCamera == Network.Network.TypeCamera.Other) pictureBox1.Image = Network.Downloading.GetImageWitchAutorized(pathtophoto, structures.Login, structures.Password);
-            else pictureBox1.ImageLocation = structures.GetPhotoStream;
+            vievImage1.FPS = trackBar1.Value;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var file = DateTime.Now.ToString().Replace(":", "-") + ".jpg";
             Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\IP Camera\\" + structures.IP);
-            pictureBox1.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\IP Camera\\" + structures.IP + "\\" + file);
+            vievImage1.Image.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\IP Camera\\" + structures.IP + "\\" + file);
         }
 
         // X, Y scaling variables for btn1
@@ -89,11 +80,6 @@ namespace IPCamera
 
             button1.Size = new Size(Size.Width - 40, button1.Size.Height);
             trackBar1.Size = new Size(Size.Width - 40, trackBar1.Size.Height);
-        }
-
-        private void ImageV_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            timer1.Stop();
         }
     }
 }

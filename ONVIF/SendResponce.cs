@@ -10,6 +10,10 @@ using IPCamera.ServiceReference1;
 using IPCamera.OPTZ;
 using IPCamera.Settings;
 using System.Drawing;
+using System.Threading;
+using IPCamera.OREP;
+using IPCamera.OREC;
+using IPCamera.OEVE;
 
 namespace IPCamera.ONVIF
 {
@@ -19,7 +23,8 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                if (set.MediaTokens.FirstOrDefault() == "") return "";
+                var tok = set.GetMediaTokens().FirstOrDefault();
+                if (tok == "" || !set.IsActive) return "";
 
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -31,7 +36,7 @@ namespace IPCamera.ONVIF
                 mediaClient.ClientCredentials.UserName.UserName = set.Login;
                 mediaClient.ClientCredentials.UserName.Password = set.Password;
 
-                MediaUri mediaUri = mediaClient.GetSnapshotUri(set.MediaTokens[profile]);
+                MediaUri mediaUri = mediaClient.GetSnapshotUri(set.GetMediaTokens()[profile]);
                 return mediaUri.Uri;
             }
             catch
@@ -64,6 +69,8 @@ namespace IPCamera.ONVIF
         {
             try
             {
+                if (!Network.Ping.IsOKServer(url)) return null;
+
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
                 HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
@@ -110,12 +117,14 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                MediaClient mediaClient = GetMediaBase(set);
-                return mediaClient.GetProfiles();
+                if (!Network.Ping.IsOnline(set.IP, (int)set.ONVIFPort)) return new Profile[] { };
+
+                var mediaClient = GetMediaBase(set).GetProfiles() ?? new Profile[] { };
+                return mediaClient != null ? mediaClient : new Profile[] { };
             }
             catch
             {
-                return new Profile[] { new Profile() };
+                return new Profile[] {  };
             }
         }
 
@@ -136,7 +145,7 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                if (set.MediaTokens.FirstOrDefault() == "") return "";
+                if (set.GetMediaTokens().FirstOrDefault() == "" || !set.IsActive) return "";
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
                 HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
@@ -147,11 +156,11 @@ namespace IPCamera.ONVIF
                 mediaClient.ClientCredentials.UserName.UserName = set.Login;
                 mediaClient.ClientCredentials.UserName.Password = set.Password;
 
-                StreamSetup ss = new StreamSetup();
-                ss.Stream = StreamType.RTPUnicast;
-                ss.Transport = new Transport();
-                ss.Transport.Protocol = TransportProtocol.RTSP;
-                MediaUri mediaUri = mediaClient.GetStreamUri(ss, set.MediaTokens[profile]);
+                ServiceReference1.StreamSetup ss = new ServiceReference1.StreamSetup();
+                ss.Stream = ServiceReference1.StreamType.RTPUnicast;
+                ss.Transport = new ServiceReference1.Transport();
+                ss.Transport.Protocol = ServiceReference1.TransportProtocol.RTSP;
+                MediaUri mediaUri = mediaClient.GetStreamUri(ss, set.GetMediaTokens()[profile]);
                 return mediaUri.Uri;
             }
             catch
@@ -185,7 +194,7 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                if (set.PTZTokens == "") return;
+                if (set.GetPTZTokens() == "" || !set.IsActive) return;
 
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -197,7 +206,56 @@ namespace IPCamera.ONVIF
                 mediaClient.ClientCredentials.UserName.UserName = set.Login;
                 mediaClient.ClientCredentials.UserName.Password = set.Password;
 
-                mediaClient.RelativeMove(set.PTZTokens, vector, speed);
+                var t = mediaClient.GetConfigurations()[0].DefaultPTZTimeout;
+
+                mediaClient.RelativeMove(set.GetMediaTokens()[0], vector, speed); //set.GetMediaTokens()[0]
+                //mediaClient.ContinuousMove(set.GetMediaTokens()[0], speed)
+            }
+            catch
+            {
+                return;
+            }
+        }
+        class CRPTZ
+        {
+            public Structures set; 
+            public OPTZ.PTZSpeed speed;
+
+            public CRPTZ(Structures set, OPTZ.PTZSpeed speed)
+            {
+                this.set = set;
+                this.speed = speed;
+            }
+        }
+        public static void AsyncCountinuousRotatePTZ(Structures set, OPTZ.PTZSpeed speed)
+        {
+            Thread th = new Thread(new ParameterizedThreadStart(_AsyncCountinuousRotatePTZ));
+            th.Start(new CRPTZ(set, speed));
+        }
+        private static void _AsyncCountinuousRotatePTZ(object ob)
+        {
+            var c = (ob as CRPTZ);
+            CountinuousRotatePTZ(c.set, c.speed);
+        }
+        public static void CountinuousRotatePTZ(Structures set, OPTZ.PTZSpeed speed, int timeout = -1)
+        {
+            try
+            {
+                if (set.GetPTZTokens() == "" || !set.IsActive) return;
+
+                var messageElement = new TextMessageEncodingBindingElement();
+                messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+                HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+                httpBinding.AuthenticationScheme = AuthenticationSchemes.Basic;
+                CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+                EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "onvif/PTZ");
+                PTZClient mediaClient = new PTZClient(bind, mediaAddress);
+                mediaClient.ClientCredentials.UserName.UserName = set.Login;
+                mediaClient.ClientCredentials.UserName.Password = set.Password;
+
+                mediaClient.ContinuousMove(set.GetMediaTokens()[0], speed, "0");
+                System.Threading.Thread.Sleep(timeout <= 0 ? (int)Settings.StaticMembers.PTZSettings.Timeout : timeout);//1000
+                mediaClient.Stop(set.GetPTZTokens(), true, true);
             }
             catch
             {
@@ -208,7 +266,7 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                if (set.PTZTokens == "") return MoveStatus.UNKNOWN.ToString();
+               if (set.GetPTZTokens() == "" || !set.IsActive) return MoveStatus.UNKNOWN.ToString();
 
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -222,7 +280,8 @@ namespace IPCamera.ONVIF
 
                 try
                 {
-                    return mediaClient.GetStatus(set.PTZTokens).MoveStatus.PanTilt.ToString();
+                    var t = mediaClient.GetStatus(set.GetPTZTokens()).MoveStatus;
+                    return t.PanTilt.ToString();
                 }
                 catch
                 {
@@ -238,7 +297,7 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                if (set.PTZTokens == "") return;
+                if (set.GetPTZTokens() == "" || !set.IsActive || !set.GetPTZController().IsSuported) return;
 
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -250,7 +309,30 @@ namespace IPCamera.ONVIF
                 mediaClient.ClientCredentials.UserName.UserName = set.Login;
                 mediaClient.ClientCredentials.UserName.Password = set.Password;
 
-                mediaClient.GotoHomePosition(set.PTZTokens, speed);
+                mediaClient.GotoHomePosition(set.GetPTZTokens(), speed);
+            }
+            catch
+            {
+                return;
+            }
+        }
+        public static void PTZStop(Structures set)
+        {
+            try
+            {
+                if (set.GetPTZTokens() == "" || !set.IsActive || !set.GetPTZController().IsSuported) return;
+
+                var messageElement = new TextMessageEncodingBindingElement();
+                messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+                HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+                httpBinding.AuthenticationScheme = AuthenticationSchemes.Basic;
+                CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+                EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "/onvif/PTZ");
+                PTZClient mediaClient = new PTZClient(bind, mediaAddress);
+                mediaClient.ClientCredentials.UserName.UserName = set.Login;
+                mediaClient.ClientCredentials.UserName.Password = set.Password;
+
+                mediaClient.Stop(set.GetPTZTokens(), true, true);
             }
             catch
             {
@@ -261,7 +343,7 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                if (set.PTZTokens == "") return;
+                if (set.GetPTZTokens() == "" || !set.IsActive) return;
 
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -273,7 +355,7 @@ namespace IPCamera.ONVIF
                 mediaClient.ClientCredentials.UserName.UserName = set.Login;
                 mediaClient.ClientCredentials.UserName.Password = set.Password;
 
-                mediaClient.SetHomePosition(set.PTZTokens);
+                mediaClient.SetHomePosition(set.GetPTZTokens());
             }
             catch
             {
@@ -284,7 +366,7 @@ namespace IPCamera.ONVIF
         {
             try
             {
-                if (set.PTZTokens == "") return new PTZVector();
+                //if (set.GetPTZTokens() == "" || !set.IsActive) return new PTZVector();
 
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -296,18 +378,19 @@ namespace IPCamera.ONVIF
                 mediaClient.ClientCredentials.UserName.UserName = set.Login;
                 mediaClient.ClientCredentials.UserName.Password = set.Password;
 
-                return mediaClient.GetStatus(set.PTZTokens).Position;
+                return mediaClient.GetStatus(set.GetMediaTokens()[0]).Position;
             }
             catch
             {
                 return new PTZVector();
             }
         }
+
         public static bool PTZSupport(Structures set)
         {
             try
             {
-                if (set.PTZTokens == "") return false;
+                if (set.GetPTZTokens() == "" || !set.IsActive) return false;
 
                 var messageElement = new TextMessageEncodingBindingElement();
                 messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -319,11 +402,101 @@ namespace IPCamera.ONVIF
                 mediaClient.ClientCredentials.UserName.UserName = set.Login;
                 mediaClient.ClientCredentials.UserName.Password = set.Password;
 
-                return mediaClient.GetNodes()[0].HomeSupported;
+                var nodes = mediaClient.GetNodes();
+
+                return nodes[0].HomeSupported;
             }
             catch
             {
                 return false;
+            }
+        }
+
+        public static string GetReplayUri(Structures set)
+        {
+            try
+            { 
+                //if (set.GetPTZTokens() == "" || !set.IsActive) return false;
+
+                var messageElement = new TextMessageEncodingBindingElement();
+                messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+                HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+                httpBinding.AuthenticationScheme = AuthenticationSchemes.Basic;
+                CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+                EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "/onvif/Replay");
+                ReplayPortClient mediaClient = new ReplayPortClient(bind, mediaAddress);
+                mediaClient.ClientCredentials.UserName.UserName = set.Login;
+                mediaClient.ClientCredentials.UserName.Password = set.Password;
+
+                var ss = new OREP.StreamSetup
+                {
+                    Stream = OREP.StreamType.RTPUnicast,
+                    Transport = new OREP.Transport()
+                    {
+                        Protocol = OREP.TransportProtocol.RTSP,
+                    }
+                };
+
+                var nodes = mediaClient.GetReplayUri(ss, set.GetMediaTokens()[0]);
+
+                return nodes;
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        public static string GetRecordingJobs(Structures set)
+        {
+            try
+            { 
+                //if (set.GetPTZTokens() == "" || !set.IsActive) return false;
+
+                var messageElement = new TextMessageEncodingBindingElement();
+                messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+                HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+                httpBinding.AuthenticationScheme = AuthenticationSchemes.Digest;
+                CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+                EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "/onvif/recording");
+                RecordingPortClient mediaClient = new RecordingPortClient(bind, mediaAddress);
+                mediaClient.ClientCredentials.UserName.UserName = set.Login;
+                mediaClient.ClientCredentials.UserName.Password = set.Password;
+
+                var nodes = mediaClient.GetServiceCapabilities();
+
+                return "";
+            }
+            catch
+            {
+                return "ERROR";
+            }
+        }
+        public static NotificationMessageHolderType[] GetEvents(Structures set)
+        {
+            try
+            {
+                //if (set.GetPTZTokens() == "" || !set.IsActive) return false;
+
+                var messageElement = new TextMessageEncodingBindingElement();
+                messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+                HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+                httpBinding.AuthenticationScheme = AuthenticationSchemes.Basic;
+                CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+                EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "/onvif/event");
+                PullPointSubscriptionClient mediaClient = new PullPointSubscriptionClient(bind, mediaAddress);
+                mediaClient.ClientCredentials.UserName.UserName = set.Login;
+                mediaClient.ClientCredentials.UserName.Password = set.Password;
+
+                NotificationMessageHolderType[] t;
+                DateTime term;
+                var nodes = mediaClient.PullMessages("1", 1, null, out term, out t);
+
+                return t;
+            }
+            catch
+            {
+                return new NotificationMessageHolderType[] { };
             }
         }
     }

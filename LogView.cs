@@ -65,12 +65,12 @@ namespace IPCamera
 
         private void button2_Click(object sender, EventArgs e)
         {
-            OpenFileDialog opg = new OpenFileDialog();
+            SaveFileDialog opg = new SaveFileDialog();
             opg.Filter = "Текстовый документ|*.txt";
 
             if(opg.ShowDialog() == DialogResult.OK)
             {
-                File.WriteAllText(opg.FileName, richTextBox1.Text);
+                File.WriteAllText(opg.FileName, richTextBox1.Text.Replace("/n", "/r/n"));
             }
         }
 
