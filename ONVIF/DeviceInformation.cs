@@ -64,7 +64,7 @@ namespace IPCamera.ONVIF
             dv.Other = client.GetDeviceInformation(out dv.Model, out dv.Version, out dv.SerialNumber, out dv.HardwareID);
             return dv;
         }
-        public static ODEV.DateTime GetCameraDate(Structures set)
+        public static SystemDateTime GetCameraDate(Structures set)
         {
             var messageElement = new TextMessageEncodingBindingElement();
             messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
@@ -76,7 +76,24 @@ namespace IPCamera.ONVIF
             client.ClientCredentials.UserName.UserName = set.Login;
             client.ClientCredentials.UserName.Password = set.Password;
 
-            return client.GetSystemDateAndTime().UTCDateTime;
+            return client.GetSystemDateAndTime();
+        }
+        public static void SetCameraDate(Structures set, SetDateTimeType t, string TZ, System.DateTime DT)
+        {
+            var messageElement = new TextMessageEncodingBindingElement();
+            messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+            HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+            httpBinding.AuthenticationScheme = AuthenticationSchemes.Basic;
+            CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+            EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "/onvif/Device");
+            DeviceClient client = new DeviceClient(bind, mediaAddress);
+            client.ClientCredentials.UserName.UserName = set.Login;
+            client.ClientCredentials.UserName.Password = set.Password;
+
+            if(t == SetDateTimeType.Manual)
+                client.SetSystemDateAndTime(t, true, new ODEV.TimeZone() { TZ = TZ}, new ODEV.DateTime() { Date = new Date() { Day = DT.Day, Month = DT.Month, Year = DT.Year }, Time = new Time() { Hour = DT.Hour, Minute = DT.Minute, Second = DT.Second } });
+            else
+                client.SetSystemDateAndTime(t, true, null, null);
         }
 
         public static NetworkProtocol[] GetNetworkProtocols(Structures set)
@@ -111,6 +128,40 @@ namespace IPCamera.ONVIF
             var t = client.GetHostname().Name;
 
             return t;
+        }
+
+        public static string SetHostname(Structures set, string newhostname)
+        {
+            var messageElement = new TextMessageEncodingBindingElement();
+            messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+            HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+            httpBinding.AuthenticationScheme = AuthenticationSchemes.Basic;
+            CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+            EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "/onvif/Device");
+            DeviceClient client = new DeviceClient(bind, mediaAddress);
+            client.ClientCredentials.UserName.UserName = set.Login;
+            client.ClientCredentials.UserName.Password = set.Password;
+
+            client.SetHostname(Uri.EscapeDataString(newhostname));
+
+            return newhostname;
+        }
+
+        public static bool SetHostnameFromDHCP(Structures set, bool FromDHCP)
+        {
+            var messageElement = new TextMessageEncodingBindingElement();
+            messageElement.MessageVersion = MessageVersion.CreateVersion(EnvelopeVersion.Soap12, AddressingVersion.None);
+            HttpTransportBindingElement httpBinding = new HttpTransportBindingElement();
+            httpBinding.AuthenticationScheme = AuthenticationSchemes.Basic;
+            CustomBinding bind = new CustomBinding(messageElement, httpBinding);
+            EndpointAddress mediaAddress = new EndpointAddress(set.GetONVIF + "/onvif/Device");
+            DeviceClient client = new DeviceClient(bind, mediaAddress);
+            client.ClientCredentials.UserName.UserName = set.Login;
+            client.ClientCredentials.UserName.Password = set.Password;
+
+            client.SetHostnameFromDHCP(FromDHCP);
+
+            return FromDHCP;
         }
 
         public static Capabilities GetCapabilities(Structures set)

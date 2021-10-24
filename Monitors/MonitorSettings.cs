@@ -20,6 +20,17 @@ namespace IPCamera.Monitors
         /// Список мониторов
         /// </summary>
         public Monitor[] Monitors;
+
+        /// <summary>
+        /// Список монитор, упорядоченные по их позиции
+        /// </summary>
+        public Monitor[] GetMonitorsSortPosition
+        {
+            get
+            {
+                return Monitors.Where(tmp => tmp.Enable).OrderBy(tmp => tmp.Position).ToArray();
+            }
+        }
         /// <summary>
         /// Название коллекции мониторов
         /// </summary>

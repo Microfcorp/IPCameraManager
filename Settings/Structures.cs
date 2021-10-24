@@ -32,7 +32,7 @@ namespace IPCamera.Settings
         public string MAC;
 
         /// <summary>
-        /// Имя пользователя
+        /// Имя камеры
         /// </summary>
         public string NameCamera;
         /// <summary>
@@ -88,6 +88,19 @@ namespace IPCamera.Settings
         public Network.Network.TypeCamera TypeCamera;
 
         /// <summary>
+        /// Проигрыватель для одиночного просмотра
+        /// </summary>
+        public TypeViewers SinglePlay;
+        /// <summary>
+        /// Проигрыватель для группового просмотра
+        /// </summary>
+        public TypeViewers GroupPlay;
+        /// <summary>
+        /// Проигрыватель для мониторов
+        /// </summary>
+        public TypeViewers MonitorPlay;
+
+        /// <summary>
         /// Структура записи
         /// </summary>
         public Record.Records Records;
@@ -95,7 +108,7 @@ namespace IPCamera.Settings
         /// <summary>
         /// Нулевая структура
         /// </summary>
-        public static Structures Null = new Structures("localhost","","",80,554,8080,0,1,false, 270000, new Rectangle(0,0,10,10), Network.Network.TypeCamera.HI3510, Record.Records.Default, "Defalt", "");
+        public static Structures Null = new Structures("localhost","","",80,554,8080,0,1,false, 270000, new Rectangle(0,0,10,10), Network.Network.TypeCamera.Other, Record.Records.Default, "Defalt", "", TypeViewers.FFPLAY, TypeViewers.ImageV, TypeViewers.ImageV);
 
         /// <summary>
         /// Обыявление структуры настроек
@@ -109,7 +122,7 @@ namespace IPCamera.Settings
         /// <param name="rt">Зона детектора движения</param>
         /// <param name="typeCamera">Тип чипа камеры</param>
         /// <param name="records">Структура для записи</param>
-        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort, uint ONVIFPort, int SelectedFirstProfile, int SelectedSecondProfile, bool ptz, decimal vdm, Rectangle rt, Network.Network.TypeCamera typeCamera, Record.Records records, string NameCamera, string MAC)
+        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort, uint ONVIFPort, int SelectedFirstProfile, int SelectedSecondProfile, bool ptz, decimal vdm, Rectangle rt, Network.Network.TypeCamera typeCamera, Record.Records records, string NameCamera, string MAC, TypeViewers v1, TypeViewers v2, TypeViewers v3)
         {
             this.IP = IP;
             //this.Uri = new Uri(IP);
@@ -127,6 +140,9 @@ namespace IPCamera.Settings
             this.PTZ = ptz;
             this.NameCamera = NameCamera;
             this.MAC = MAC;
+            this.SinglePlay = v1;
+            this.GroupPlay = v2;
+            this.MonitorPlay = v3;
         }
 
         /// <summary>
@@ -227,6 +243,17 @@ namespace IPCamera.Settings
         public string Login
         {
             get => Name;
+        }
+
+        /// <summary>
+        /// Получает из сети MAC адрес
+        /// </summary>
+        public string GetMAC
+        {
+            get
+            {
+                return Network.MAC.ConvertIpToMAC(System.Net.IPAddress.Parse(IP));
+            }
         }
 
         /// <summary>
@@ -371,7 +398,10 @@ namespace IPCamera.Settings
         {
             get
             {
-                return String.Format(GetPhoto, IP, HTTPPort, Name, Password);
+                if (TypeCamera == Network.Network.TypeCamera.HI3510)
+                    return String.Format(GetPhoto, IP, HTTPPort, Name, Password);
+                else
+                    return GetPhotoStreamSecondONVIF;
             }
         }
         /// <summary>
@@ -441,6 +471,11 @@ namespace IPCamera.Settings
                 return this.GetToken().Media[0];
             else this.AddToken();
             return this.GetToken().Media[0];
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
         }
     }
 }

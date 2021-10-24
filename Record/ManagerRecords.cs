@@ -187,5 +187,20 @@ namespace IPCamera.Record
                 PathRecord = opg.SelectedPath;               
             }
         }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            groupBox3.Visible = true;
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            groupBox3.Visible = false;
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            groupBox3.Visible = false;
+        }
     }
 }

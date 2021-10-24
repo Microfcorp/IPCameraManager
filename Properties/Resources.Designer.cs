@@ -73,6 +73,16 @@ namespace IPCamera.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _54544 {
+            get {
+                object obj = ResourceManager.GetObject("54544", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap a1bb0cc10512df82afd421a77097cb91_w200 {
             get {
                 object obj = ResourceManager.GetObject("a1bb0cc10512df82afd421a77097cb91_w200", resourceCulture);
@@ -86,6 +96,27 @@ namespace IPCamera.Properties {
         internal static System.Drawing.Bitmap camera {
             get {
                 object obj = ResourceManager.GetObject("camera", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap kisspng_computer_icons_download_loading_icon_5b2111d6e12091_5184822115288939109221 {
+            get {
+                object obj = ResourceManager.GetObject("kisspng-computer-icons-download-loading-icon-5b2111d6e12091.518482211528893910922" +
+                        "1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap norecord {
+            get {
+                object obj = ResourceManager.GetObject("norecord", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,6 +144,17 @@ namespace IPCamera.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap png_transparent_computer_icons_upload_youtube_youtube_arrow_иконка_download_youtube_thumbnail {
+            get {
+                object obj = ResourceManager.GetObject("png-transparent-computer-icons-upload-youtube-youtube-arrow-иконка-download-youtu" +
+                        "be-thumbnail", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap record {
             get {
                 object obj = ResourceManager.GetObject("record", resourceCulture);
@@ -123,9 +165,29 @@ namespace IPCamera.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap settings_3 {
+            get {
+                object obj = ResourceManager.GetObject("settings-3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap вверх {
             get {
                 object obj = ResourceManager.GetObject("вверх", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap видео {
+            get {
+                object obj = ResourceManager.GetObject("видео", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -156,6 +218,36 @@ namespace IPCamera.Properties {
         internal static System.Drawing.Bitmap вправо {
             get {
                 object obj = ResourceManager.GetObject("вправо", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Конвертирование {
+            get {
+                object obj = ResourceManager.GetObject("Конвертирование", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap логи {
+            get {
+                object obj = ResourceManager.GetObject("логи", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap удалить {
+            get {
+                object obj = ResourceManager.GetObject("удалить", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

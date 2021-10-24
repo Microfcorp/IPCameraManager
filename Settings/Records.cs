@@ -31,7 +31,7 @@ namespace IPCamera.Settings.Record
         /// </summary>
         public int RecoedDuration;
         /// <summary>
-        /// Количество записей
+        /// Дней хранения записи
         /// </summary>
         public int RecordsCount;
         /// <summary>

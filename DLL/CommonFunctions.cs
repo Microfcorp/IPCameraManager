@@ -41,6 +41,29 @@ namespace IPCamera.DLL
         [DllImport("user32.dll")]
         public static extern int SetWindowLong(this IntPtr hWnd, int nIndex, uint dwNewLong);
 
+        // This static method is required because legacy OSes do not support
+        // SetWindowLongPtr
+        /// <summary>
+        /// Изменяет параметры окна
+        /// </summary>
+        /// <param name="hWnd">Окно</param>
+        /// <param name="nIndex">Индекс параметра</param>
+        /// <param name="dwNewLong">Параметр окна</param>
+        /// <returns></returns>
+        public static IntPtr SetWindowLongPtr(this IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            if (IntPtr.Size == 8)
+                return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+            else
+                return new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
+        }
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+        private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
         /// <summary>
         /// Изменить состояние окна
         /// </summary>
@@ -57,6 +80,15 @@ namespace IPCamera.DLL
         /// <returns></returns>
         [DllImport("kernel32.dll")]
         public static extern int GetProcessId(this IntPtr handle);
+
+        /// <summary>
+        /// Убивает процесс
+        /// </summary>
+        /// <param name="handle"></param>
+        public static void Close(this IntPtr handle)
+        {
+            Process.GetProcessById(handle.GetProcessId()).Kill();
+        }
 
         /// <summary>
         /// Удалить файл
@@ -222,7 +254,7 @@ namespace IPCamera.DLL
         public static extern int GetWindowTextLength(this IntPtr hWnd);
 
         /// <summary>
-        /// 
+        /// Индексы параметров окна
         /// </summary>
         public enum WindowLongFlags : int
         {

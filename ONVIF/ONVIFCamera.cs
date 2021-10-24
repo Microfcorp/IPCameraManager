@@ -58,7 +58,19 @@ namespace IPCamera.ONVIF
         /// </summary>
         public CameraDateTime CameraDateTime
         {
-            get => new CameraDateTime(DeviceONVIF.GetCameraDate(set));
+            get { var e = DeviceONVIF.GetCameraDate(set); return new CameraDateTime(e.UTCDateTime, e.TimeZone.TZ); }
+        }
+
+        /// <summary>
+        /// Устанавливает время и дату на камере
+        /// </summary>
+        /// <param name="TT">NTP или вручную</param>
+        /// <param name="TZ">Часовой пояс/param>
+        /// <param name="DT">Дата и время</param>
+
+        public void SetCameraTime(ODEV.SetDateTimeType TT, string TZ, DateTime DT)
+        {
+            DeviceONVIF.SetCameraDate(set, TT, TZ, DT);
         }
 
         /// <summary>
@@ -91,6 +103,7 @@ namespace IPCamera.ONVIF
         public string Hostname
         {
             get => DeviceONVIF.GetHostname(set);
+            set => DeviceONVIF.SetHostname(set, value);
         }
 
         /// <summary>

@@ -101,6 +101,13 @@ namespace IPCamera
             new Thread(() => ld.ShowDialog()).Start();
 
             var DeviceInfo = Downloading.GetDeviceParams(setting.URLToHTTPPort, setting.Name, setting.Password);
+            if (DeviceInfo.Count < 1)
+            {
+                if (ld != null && !ld.IsDisposed) ld.Invoke(new Action(() => ld.Close()));
+                MessageBox.Show("Ошибка получения запроса от камеры", "Microf IP Camera Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+                return;
+            }
             label1.Text = "Свободно места на SD (" + formatFileSize(int.Parse(DeviceInfo["sdfreespace"])) + ") из " + formatFileSize(int.Parse(DeviceInfo["sdtotalspace"]));
             progressBar2.Maximum = int.Parse(DeviceInfo["sdtotalspace"]);
             progressBar2.Value = int.Parse(DeviceInfo["sdtotalspace"]) - int.Parse(DeviceInfo["sdfreespace"]);
@@ -143,7 +150,7 @@ namespace IPCamera
             }
             if (backgroundWorker1.IsBusy) backgroundWorker1.CancelAsync();
             if (!backgroundWorker1.IsBusy) backgroundWorker1.RunWorkerAsync(DateTime.Now - DateTime.Parse(DeviceInfo["startdate"]));
-            ld.Invoke(new Action(() => ld.Close()));
+            if(ld != null && !ld.IsDisposed) ld.Invoke(new Action(() => ld.Close()));
             Log = "Загрузка завершена";
         }
 

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IPCamera</RootNamespace>
     <AssemblyName>IPCamera</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -52,7 +52,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>camera.ico</ApplicationIcon>
+    <ApplicationIcon>ca.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DBFile">
@@ -89,6 +89,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Serialization" />
     <Reference Include="ZedGraph, Version=5.1.7.430, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <HintPath>..\packages\ZedGraph.5.1.7\lib\net35-Client\ZedGraph.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -375,6 +376,7 @@
     <Compile Include="Settings\StaticMembers\ONLINEMember.cs" />
     <Compile Include="Settings\StaticMembers\PTZSettings.cs" />
     <Compile Include="Settings\Structures.cs" />
+    <Compile Include="Settings\TypeViewers.cs" />
     <Compile Include="StringMaster.cs" />
     <Compile Include="TextInput.cs">
       <SubType>Form</SubType>
@@ -382,6 +384,91 @@
     <Compile Include="TextInput.Designer.cs">
       <DependentUpon>TextInput.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\CameraMenuModule.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\CameraMenuModule.Designer.cs">
+      <DependentUpon>CameraMenuModule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CameraSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\CameraSettings.Designer.cs">
+      <DependentUpon>CameraSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MonitorMenuModule.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\MonitorMenuModule.Designer.cs">
+      <DependentUpon>MonitorMenuModule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MonitorSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MonitorSettings.Designer.cs">
+      <DependentUpon>MonitorSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ServiceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ServiceForm.Designer.cs">
+      <DependentUpon>ServiceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TabBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\TabBox.Designer.cs">
+      <DependentUpon>TabBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TriggerLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\TriggerLabel.Designer.cs">
+      <DependentUpon>TriggerLabel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Viewers\GroupPlay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Viewers\GroupPlay.Designer.cs">
+      <DependentUpon>GroupPlay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Viewers\ImageVPlayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Viewers\ImageVPlayer.Designer.cs">
+      <DependentUpon>ImageVPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Viewers\InjectedAutoPlayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Viewers\InjectedAutoPlayer.Designer.cs">
+      <DependentUpon>InjectedAutoPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Viewers\MonitorsPlay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Viewers\MonitorsPlay.Designer.cs">
+      <DependentUpon>MonitorsPlay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Viewers\singleplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Viewers\singleplay.Designer.cs">
+      <DependentUpon>singleplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Viewers\ffplayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Viewers\ffplayer.Designer.cs">
+      <DependentUpon>ffplayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WindowManager.cs" />
     <Compile Include="VievImage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -499,6 +586,48 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TextInput.resx">
       <DependentUpon>TextInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CameraMenuModule.resx">
+      <DependentUpon>CameraMenuModule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\CameraSettings.resx">
+      <DependentUpon>CameraSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MonitorMenuModule.resx">
+      <DependentUpon>MonitorMenuModule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MonitorSettings.resx">
+      <DependentUpon>MonitorSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ServiceForm.resx">
+      <DependentUpon>ServiceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TabBox.resx">
+      <DependentUpon>TabBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\TriggerLabel.resx">
+      <DependentUpon>TriggerLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Viewers\GroupPlay.resx">
+      <DependentUpon>GroupPlay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Viewers\ImageVPlayer.resx">
+      <DependentUpon>ImageVPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Viewers\InjectedAutoPlayer.resx">
+      <DependentUpon>InjectedAutoPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Viewers\MonitorsPlay.resx">
+      <DependentUpon>MonitorsPlay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Viewers\singleplay.resx">
+      <DependentUpon>singleplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Viewers\ffplayer.resx">
+      <DependentUpon>ffplayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VievImage.resx">
       <DependentUpon>VievImage.cs</DependentUpon>
@@ -660,6 +789,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\OEVE\IPCamera.OEVE.EndpointReferenceType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\OEVE\IPCamera.OEVE.EventBrokerConfig.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\OEVE\IPCamera.OEVE.GetCurrentMessageResponse.datasource">
@@ -1125,7 +1257,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ca.ico" />
     <Content Include="camera.ico" />
+    <Content Include="камера иконка.ico" />
+    <None Include="Resources\видео.png" />
+    <None Include="Resources\norecord.png" />
+    <None Include="Resources\логи.png" />
+    <None Include="Resources\Конвертирование.jpg" />
+    <None Include="Resources\удалить.png" />
+    <None Include="Resources\png-transparent-computer-icons-upload-youtube-youtube-arrow-иконка-download-youtube-thumbnail.png" />
+    <None Include="Resources\kisspng-computer-icons-download-loading-icon-5b2111d6e12091.5184822115288939109221.jpg" />
+    <None Include="Resources\54544.png" />
+    <None Include="Resources\settings-3.png" />
     <None Include="Resources\4dc11d17f5292fd463a60aa2bbb41f6a_w200.gif" />
     <None Include="Resources\a1bb0cc10512df82afd421a77097cb91_w200.gif" />
     <None Include="Resources\вправо.png" />

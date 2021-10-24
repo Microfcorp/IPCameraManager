@@ -11,6 +11,9 @@ namespace IPCamera.DLL
         public const uint WS_POPUP = 0x80000000;
         public const uint WS_CHILD = 0x40000000;
         public const uint WS_MINIMIZE = 0x20000000;
+        /// <summary>
+        /// Без рамок
+        /// </summary>
         public const uint WS_VISIBLE = 0x10000000;
         public const uint WS_DISABLED = 0x08000000;
         public const uint WS_CLIPSIBLINGS = 0x04000000;

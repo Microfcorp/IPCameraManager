@@ -212,6 +212,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.axWindowsMediaPlayer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VisibleRecord";
             this.Text = "Архив записей";
             this.Load += new System.EventHandler(this.VisibleRecord_Load);

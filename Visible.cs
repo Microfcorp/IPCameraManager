@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using IPCamera.DLL;
+using IPCamera.Settings;
 
 namespace IPCamera
 {
@@ -30,6 +31,12 @@ namespace IPCamera
 
         bool ump;
 
+        public delegate void StreamData(object objects, string stream);
+
+        public event StreamData StreamOK;
+
+        public event StreamData CloseStream;
+
         public Visible(uint Selected, bool ump)
         {
             InitializeComponent();
@@ -39,6 +46,12 @@ namespace IPCamera
             this.DoubleBuffered = true;
             BackColor = Color.Blue;
             this.ump = ump;
+        }
+
+        public void mShow()
+        {
+            Show();
+            Visible = false;
         }
 
         void Play()
@@ -71,7 +84,8 @@ namespace IPCamera
             {               
                 s = new Process();
                 s.StartInfo.FileName = "ffplay.exe";
-                s.StartInfo.Arguments = String.Format(IsHigh ? Setting.GetRTSPFirstONVIF : Setting.GetRTSPSecondONVIF)
+                var strem = String.Format(IsHigh ? Setting.GetRTSPFirstONVIF : Setting.GetRTSPSecondONVIF);
+                s.StartInfo.Arguments = strem
                     + " -x 640 -y 360";
                 s.StartInfo.UseShellExecute = false;
                 s.StartInfo.CreateNoWindow = true;
@@ -81,14 +95,16 @@ namespace IPCamera
                 //s.OutputDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");
                 //s.ErrorDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");      
 
-                s.Exited += (o, e) => { BackColor = Color.Red; try { th.Abort(); } catch { } };
+                s.Exited += (o, e) => { CloseStream?.Invoke(this, strem); BackColor = Color.Red; try { th.Abort(); } catch { } };
+
+                
 
                 s.Start();
                 s.BeginErrorReadLine();
 
                 this.StopFlashing();
 
-                s.ErrorDataReceived += (o, e) => { if (GroupV.FFPGV.IsRunFFPLAY(e.Data)) try { if (InvokeRequired) Invoke(new Action(() => { BackColor = Color.FromArgb(255, 192, 192); })); } catch { } };
+                s.ErrorDataReceived += (o, e) => { if (GroupV.FFPGV.IsRunFFPLAY(e.Data)) try { if (InvokeRequired) Invoke(new Action(() => { StreamOK?.Invoke(this, strem); BackColor = Color.FromArgb(255, 192, 192); })); } catch { } };
 
                 if (Setting.GetPTZController().IsSuported) th.Start();
 
@@ -96,8 +112,8 @@ namespace IPCamera
 
                 // child, new parent
                 // make 'this' the parent of ffmpeg (presuming you are in scope of a Form or Control)
-                s.MainWindowHandle.SetParent(this.Handle);
-                s.MainWindowHandle.ShowWindow((int)CommonFunctions.nCmdShow.SW_HIDE);
+                if(!s.HasExited) s.MainWindowHandle.SetParent(this.Handle);
+                if (!s.HasExited) s.MainWindowHandle.ShowWindow((int)CommonFunctions.nCmdShow.SW_HIDE);
 
                 FormClosing += (o, e) => th.Abort();
 

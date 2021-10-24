@@ -8,7 +8,10 @@ namespace IPCamera.ONVIF
 {
     public class CameraDateTime : ODEV.DateTime
     {
-
+        /// <summary>
+        /// Часовой пояс
+        /// </summary>
+        public string TZ;
         /// <summary>
         /// Маска для преобразования в строковое представление
         /// </summary>
@@ -19,10 +22,11 @@ namespace IPCamera.ONVIF
         /// </summary>
         public new event System.ComponentModel.ProgressChangedEventHandler PropertyChanged;
 
-        public CameraDateTime(ODEV.DateTime dateTime)
+        public CameraDateTime(ODEV.DateTime dateTime, string tz)
         {
             Time = dateTime.Time;
             Date = dateTime.Date;
+            TZ = tz;
             dateTime.PropertyChanged += DateTime_PropertyChanged; ;
         }
 

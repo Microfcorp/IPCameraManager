@@ -61,7 +61,7 @@ namespace IPCamera.Monitors
         {
             comboBox1.Items.Add("localhost");
             var l = monitor.Monitors.ToList();
-            l.Add(new Monitor(0, (uint)comboBox1.Items.Count-1, true));
+            l.Add(new Monitor(0, (uint)comboBox1.Items.Count-1, true, ""));
             monitor.Monitors = l.ToArray();
             comboBox1.SelectedIndex = comboBox1.Items.Count - 1;
         }

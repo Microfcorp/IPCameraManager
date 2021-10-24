@@ -53,5 +53,26 @@ namespace IPCamera.Settings.StaticMembers
                 File.WriteAllText(path, value.ToString());
             }
         }
+        /// <summary>
+        /// Включен ли поворот с клавиш
+        /// </summary>       
+        public static bool PTZKeys
+        {
+            get
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\ptz\\PTZKeys.txt";
+                if (File.Exists(path))
+                {
+                    return bool.Parse(File.ReadAllText(path));
+                }
+                return false;
+            }
+            set
+            {
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\ptz");
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MicrofDev\\IPCameraManager\\ptz\\PTZKeys.txt";
+                File.WriteAllText(path, value.ToString());
+            }
+        }
     }
 }

@@ -24,7 +24,6 @@ namespace IPCamera.Record
                 FileInfo fi = new FileInfo(file);
                 if (fi.LastWriteTime < DateTime.Now.AddDays(-Structures.Load()[CameraID].Records.RecordsCount))
                 {
-                    Console.WriteLine(file);
                     file.DeleteFile();
                 }
             }

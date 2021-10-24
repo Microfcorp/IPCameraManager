@@ -26,15 +26,20 @@ namespace IPCamera
                 Application.Run(new Updater(vers));
 
             if (File.Exists("UpdateDownloading.exe"))
-                File.Delete("UpdateDownloading.exe");
+                ("UpdateDownloading.exe").DeleteFile();
 
             if (p.FindParams("-c"))
             {
                 Application.Run(new Convert());
             }
-            else
+            else if (p.FindParams("-l"))
             {
                 Application.Run(new Main(p));
+            }
+            else
+            {
+                Application.Run(new UI.MainForm());
+                //Application.Run(new Main(p));
             }
 
         }

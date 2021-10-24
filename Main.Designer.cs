@@ -760,15 +760,15 @@
             // импортToolStripMenuItem
             // 
             this.импортToolStripMenuItem.Name = "импортToolStripMenuItem";
-            this.импортToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.импортToolStripMenuItem.Text = "Импорт в файл";
+            this.импортToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.импортToolStripMenuItem.Text = "Импорт их файла";
             this.импортToolStripMenuItem.Click += new System.EventHandler(this.импортToolStripMenuItem_Click);
             // 
             // экспортToolStripMenuItem
             // 
             this.экспортToolStripMenuItem.Name = "экспортToolStripMenuItem";
-            this.экспортToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.экспортToolStripMenuItem.Text = "Экспорт из файла";
+            this.экспортToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.экспортToolStripMenuItem.Text = "Экспорт в файл";
             this.экспортToolStripMenuItem.Click += new System.EventHandler(this.экспортToolStripMenuItem_Click);
             // 
             // toolStripSeparator13
