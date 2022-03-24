@@ -78,6 +78,11 @@ namespace IPCamera.Settings
         public bool PTZ;
 
         /// <summary>
+        /// Файл к карте для текущей камеры
+        /// </summary>
+        public string MapsFile;
+
+        /// <summary>
         /// Зона детектора движения
         /// </summary>
         public Rectangle ZoneDetect;
@@ -108,7 +113,7 @@ namespace IPCamera.Settings
         /// <summary>
         /// Нулевая структура
         /// </summary>
-        public static Structures Null = new Structures("localhost","","",80,554,8080,0,1,false, 270000, new Rectangle(0,0,10,10), Network.Network.TypeCamera.Other, Record.Records.Default, "Defalt", "", TypeViewers.FFPLAY, TypeViewers.ImageV, TypeViewers.ImageV);
+        public static Structures Null = new Structures("localhost","","",80,554,8080,0,1,false, 270000, new Rectangle(0,0,10,10), Network.Network.TypeCamera.Other, Record.Records.Default, "Defalt", "", TypeViewers.FFPLAY, TypeViewers.ImageV, TypeViewers.ImageV, "");
 
         /// <summary>
         /// Обыявление структуры настроек
@@ -122,7 +127,7 @@ namespace IPCamera.Settings
         /// <param name="rt">Зона детектора движения</param>
         /// <param name="typeCamera">Тип чипа камеры</param>
         /// <param name="records">Структура для записи</param>
-        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort, uint ONVIFPort, int SelectedFirstProfile, int SelectedSecondProfile, bool ptz, decimal vdm, Rectangle rt, Network.Network.TypeCamera typeCamera, Record.Records records, string NameCamera, string MAC, TypeViewers v1, TypeViewers v2, TypeViewers v3)
+        public Structures(string IP, string Name, string Password, uint HTTPPort, uint RTSPPort, uint ONVIFPort, int SelectedFirstProfile, int SelectedSecondProfile, bool ptz, decimal vdm, Rectangle rt, Network.Network.TypeCamera typeCamera, Record.Records records, string NameCamera, string MAC, TypeViewers v1, TypeViewers v2, TypeViewers v3, string MapsFile)
         {
             this.IP = IP;
             //this.Uri = new Uri(IP);
@@ -143,6 +148,7 @@ namespace IPCamera.Settings
             this.SinglePlay = v1;
             this.GroupPlay = v2;
             this.MonitorPlay = v3;
+            this.MapsFile = MapsFile;
         }
 
         /// <summary>

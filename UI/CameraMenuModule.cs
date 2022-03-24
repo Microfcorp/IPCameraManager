@@ -27,8 +27,16 @@ namespace IPCamera.UI
                 Camera = Structures.Load().Where(tmp => tmp.IP == value).FirstOrDefault();
                 GenerateButtons();
                 new Thread(() => { Thread.Sleep(500); try { CameraTime = Camera.GetONVIFController().CameraDateTime.DateTime; Invoke(new Action(() => { label5.Visible = label6.Visible = true; })); } catch { }  }).Start(); 
-                label1.Text = Camera.NameCamera;
+                label1.Text = Camera.NameCamera != "" ? Camera.NameCamera : Camera.IP;
                 linkLabel2.Text = Camera.IP;
+                if (Camera.MapsFile != null && Camera.MapsFile != "")
+                {
+                    var maps = new Maps.MapsFile(Camera.MapsFile).Manifest.Objects.Where(t => t.OID == GenSelected);
+                    if (!maps.Any())
+                        linkLabel1.Text = "Отсутствует на карте";
+                    else
+                        linkLabel1.Text = maps.FirstOrDefault().Name;
+                }
             }
         }
 
@@ -201,6 +209,13 @@ namespace IPCamera.UI
         private void button6_Click(object sender, EventArgs e)
         {
             (new Record.VisibleRecord(GenSelected)).OpenToWindowManager((MainForm)ParentForm, "Просмотр логов");
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            //new Maps.MapsEdit(Camera.MapsFile).Show();
+            if(Camera.MapsFile != null && Camera.MapsFile != "")
+                new Maps.MapsView(Camera.MapsFile).OpenToWindowManager((MainForm)ParentForm, "Карта - " + Camera.IP);
         }
     }
 }

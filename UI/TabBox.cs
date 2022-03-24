@@ -61,7 +61,7 @@ namespace IPCamera.UI
             TabBox tb = new TabBox();
             tb.Image = form.Icon.ToBitmap();
             tb.Text = form.Text;
-            tb.TabSelect += (o, e) => { form.Activate(); };
+            tb.TabSelect += (o, e) => { form.WindowState = FormWindowState.Normal; form.Activate(); };
             form.FormClosed += (o, e) => { tb.Dispose(); };
             return tb;
         }

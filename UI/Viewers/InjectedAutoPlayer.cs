@@ -36,7 +36,7 @@ namespace IPCamera.UI.Viewers
             set;
         }
         /// <summary>
-        /// Тип плеера воспроизведения
+        /// Тип качества воспроизведения
         /// </summary>
         public TypePlayer Player
         {
@@ -79,6 +79,15 @@ namespace IPCamera.UI.Viewers
                 ffplayer1.FilePath = Player == TypePlayer.SD ? Camera.GetRTSPSecondONVIF : Camera.GetRTSPFirstONVIF;
                 ffplayer1.StartFFPLAY();
                 Controls.Add(ffplayer1);
+            }
+            else if (typeViewers == TypeViewers.MPlayer)
+            {
+                mplayer mplayer1 = new mplayer();
+                mplayer1.Dock = DockStyle.Fill;
+                mplayer1.Disposed += (o, q) => { Dispose(); };
+                mplayer1.FilePath = Player == TypePlayer.SD ? Camera.GetRTSPSecondONVIF : Camera.GetRTSPFirstONVIF;
+                mplayer1.Startmplayer();
+                Controls.Add(mplayer1);
             }
         }
 

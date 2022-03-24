@@ -58,6 +58,9 @@
     <Reference Include="DBFile">
       <HintPath>..\..\IPCameraDBParser\DBFile\bin\Debug\DBFile.dll</HintPath>
     </Reference>
+    <Reference Include="DotNetZip, Version=1.15.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.15.0\lib\net40\DotNetZip.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV.UI, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.4.1.1.3497\lib\net35\Emgu.CV.UI.dll</HintPath>
     </Reference>
@@ -67,11 +70,13 @@
     <Reference Include="Emgu.CV.World, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\packages\EMGU.CV.4.1.1.3497\lib\net35\Emgu.CV.World.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.11.22.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.11.22\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.37.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.37\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="QRCoder, Version=1.3.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\QRCoder.1.3.6\lib\net40\QRCoder.dll</HintPath>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.4.1\lib\net40\QRCoder.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -90,6 +95,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Serialization" />
+    <Reference Include="WindowsBase" />
     <Reference Include="ZedGraph, Version=5.1.7.430, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <HintPath>..\packages\ZedGraph.5.1.7\lib\net35-Client\ZedGraph.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -402,6 +408,32 @@
     <Compile Include="UI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Maps\MapsEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Maps\MapsEdit.Designer.cs">
+      <DependentUpon>MapsEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Maps\MapsFile.cs" />
+    <Compile Include="UI\Maps\MapsManifest.cs" />
+    <Compile Include="UI\Maps\MapsObjectSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Maps\MapsObjectSetting.Designer.cs">
+      <DependentUpon>MapsObjectSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Maps\MapsObjectUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Maps\MapsObjectUI.Designer.cs">
+      <DependentUpon>MapsObjectUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Maps\MapsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Maps\MapsView.Designer.cs">
+      <DependentUpon>MapsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\MonitorMenuModule.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -431,6 +463,12 @@
     </Compile>
     <Compile Include="UI\TriggerLabel.Designer.cs">
       <DependentUpon>TriggerLabel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Viewers\mplayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Viewers\mplayer.Designer.cs">
+      <DependentUpon>mplayer.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Viewers\GroupPlay.cs">
       <SubType>Form</SubType>
@@ -596,6 +634,18 @@
     <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Maps\MapsEdit.resx">
+      <DependentUpon>MapsEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Maps\MapsObjectSetting.resx">
+      <DependentUpon>MapsObjectSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Maps\MapsObjectUI.resx">
+      <DependentUpon>MapsObjectUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Maps\MapsView.resx">
+      <DependentUpon>MapsView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\MonitorMenuModule.resx">
       <DependentUpon>MonitorMenuModule.cs</DependentUpon>
     </EmbeddedResource>
@@ -610,6 +660,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\TriggerLabel.resx">
       <DependentUpon>TriggerLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Viewers\mplayer.resx">
+      <DependentUpon>mplayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Viewers\GroupPlay.resx">
       <DependentUpon>GroupPlay.cs</DependentUpon>
@@ -1259,6 +1312,7 @@
   <ItemGroup>
     <Content Include="ca.ico" />
     <Content Include="camera.ico" />
+    <None Include="Resources\4595139.png" />
     <Content Include="камера иконка.ico" />
     <None Include="Resources\видео.png" />
     <None Include="Resources\norecord.png" />

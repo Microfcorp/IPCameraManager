@@ -18,7 +18,7 @@ namespace IPCamera.UI.Viewers
     public partial class singleplay : Form
     {
         Structures conf;
-        ffplayer ffplayer1 = new ffplayer();
+        //ffplayer ffplayer1 = new ffplayer();
         public singleplay()
         {
             InitializeComponent();

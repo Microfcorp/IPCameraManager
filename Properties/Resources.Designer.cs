@@ -63,6 +63,16 @@ namespace IPCamera.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _4595139 {
+            get {
+                object obj = ResourceManager.GetObject("4595139", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _4dc11d17f5292fd463a60aa2bbb41f6a_w200 {
             get {
                 object obj = ResourceManager.GetObject("4dc11d17f5292fd463a60aa2bbb41f6a_w200", resourceCulture);

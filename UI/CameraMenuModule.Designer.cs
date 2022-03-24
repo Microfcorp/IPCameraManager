@@ -36,9 +36,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.HelpMess = new System.Windows.Forms.ToolTip(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -46,6 +43,9 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.HelpMess = new System.Windows.Forms.ToolTip(this.components);
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -93,6 +93,7 @@
             this.linkLabel1.Text = "Нет данных";
             this.HelpMess.SetToolTip(this.linkLabel1, "Нажмите, что бы открыть карту");
             this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label5
             // 
@@ -134,25 +135,6 @@
             this.flowLayoutPanel1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.flowLayoutPanel1.Size = new System.Drawing.Size(316, 56);
             this.flowLayoutPanel1.TabIndex = 10;
-            // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(45, 41);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(40, 13);
-            this.linkLabel2.TabIndex = 11;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "0.0.0.0";
-            this.HelpMess.SetToolTip(this.linkLabel2, "Нажмите, что бы открыть страницу в веб браузере");
-            this.linkLabel2.VisitedLinkColor = System.Drawing.Color.Blue;
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // button1
             // 
@@ -224,7 +206,7 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(51, 46);
             this.button5.TabIndex = 12;
-            this.HelpMess.SetToolTip(this.button5, "Конвертирование");
+            this.HelpMess.SetToolTip(this.button5, "Логи камеры");
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Visible = false;
             this.button5.Click += new System.EventHandler(this.button5_Click);
@@ -238,9 +220,28 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(51, 46);
             this.button6.TabIndex = 13;
-            this.HelpMess.SetToolTip(this.button6, "Просмотр видео");
+            this.HelpMess.SetToolTip(this.button6, "Просмотр локальных записей");
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(45, 41);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(40, 13);
+            this.linkLabel2.TabIndex = 11;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "0.0.0.0";
+            this.HelpMess.SetToolTip(this.linkLabel2, "Нажмите, что бы открыть страницу в веб браузере");
+            this.linkLabel2.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // CameraMenuModule
             // 

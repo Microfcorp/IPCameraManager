@@ -12,6 +12,7 @@ using QRCoder;
 using IPCamera.Network;
 using System.ServiceModel.Discovery;
 using System.Xml;
+using System.IO;
 
 namespace IPCamera.UI
 {
@@ -123,6 +124,7 @@ namespace IPCamera.UI
             conf.RTSPPort = (uint)(numericUpDown3.Value);
             conf.Name = comboBox1.Text;
             conf.Password = textBox2.Text;
+            conf.MapsFile = Application.StartupPath + Maps.MapsFile.MapsDirPrefix + comboBox9.Text;
         }
 
         void SaveStructures()
@@ -151,10 +153,18 @@ namespace IPCamera.UI
             LoadVideo();
         }
 
+        void LoadMapsFiles()
+        {
+            comboBox9.Items.Clear();
+            comboBox9.Items.AddRange(Maps.MapsFile.GetMapsFileName());
+            comboBox9.Text = Path.GetFileName(conf.MapsFile);
+        }
+
         private void CameraSettings_Load(object sender, EventArgs e)
         {
             SearchONVIF();
             LoadSettings();
+            LoadMapsFiles();
         }
 
         private void CameraSettings_FormClosing(object sender, FormClosingEventArgs e)
@@ -309,6 +319,29 @@ namespace IPCamera.UI
             numericUpDown2.Value = ONVIFPORTS[comboBox5.Text];
             numericUpDown1.Value = (uint)protocols.Where(tmp => tmp.Name == ODEV.NetworkProtocolType.HTTP).FirstOrDefault().Port.FirstOrDefault();
             numericUpDown3.Value = (uint)protocols.Where(tmp => tmp.Name == ODEV.NetworkProtocolType.RTSP).FirstOrDefault().Port.FirstOrDefault();
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            Maps.MapsFile.NewMapsFile(comboBox5.Text);
+            LoadMapsFiles();
+        }
+
+        private void button16_Click_1(object sender, EventArgs e)
+        {
+            Maps.MapsFile.DeleteMapsFile(Application.StartupPath + Maps.MapsFile.MapsDirPrefix + comboBox9.Text);
+            conf.MapsFile = null;
+            LoadMapsFiles();
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            new Maps.MapsEdit(Application.StartupPath + Maps.MapsFile.MapsDirPrefix + comboBox9.Text).Show();
         }
     }
 }

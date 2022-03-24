@@ -573,7 +573,7 @@ namespace IPCamera
             panel1.Visible = false;
             panel3.Visible = true;
             var structures = Structures.Load();
-            structures[Selected] = new Structures(IP, UserName, Password, HTTPPort, RTSPPort, ONVIFPort, Structures.Load()[Selected].SelectFirstProfile, Structures.Load()[Selected].SelectSecondProfile, PTZ, Structures.Load()[Selected].ValueMD, Structures.Load()[Selected].ZoneDetect, GetTypeCamera, Structures.Load()[Selected].Records, NM, MAC.ConvertIpToMAC(System.Net.IPAddress.Parse(IP)), TypeViewers.FFPLAY, TypeViewers.ImageV, TypeViewers.ImageV);
+            structures[Selected] = new Structures(IP, UserName, Password, HTTPPort, RTSPPort, ONVIFPort, Structures.Load()[Selected].SelectFirstProfile, Structures.Load()[Selected].SelectSecondProfile, PTZ, Structures.Load()[Selected].ValueMD, Structures.Load()[Selected].ZoneDetect, GetTypeCamera, Structures.Load()[Selected].Records, NM, MAC.ConvertIpToMAC(System.Net.IPAddress.Parse(IP)), TypeViewers.FFPLAY, TypeViewers.ImageV, TypeViewers.ImageV, Structures.Load()[Selected].MapsFile);
             Structures.Save(structures);
 
             if (!structures[Selected].IsActive) MessageBox.Show("Данная камера сейчас недоступна. Проверьте все ли данные указаны верно");

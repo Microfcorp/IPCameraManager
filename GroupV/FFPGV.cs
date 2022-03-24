@@ -41,6 +41,12 @@ namespace IPCamera.GroupV
             return str != null && str.Contains("M-V:") && str.Contains("fd=") && str.Contains("aq=") && str.Contains("vq=") && str.Contains("sq=");
         }
 
+        public static bool IsRunMPLAYER(string str)
+        {
+            Console.WriteLine(str);
+            return str != null && str.Contains("VO:") && str.Contains("=>") && str.Contains("[") && str.Contains("]");
+        }
+
         private Process OpenPlayer(Settings.Structures Setting)
         {
             var s = new Process();

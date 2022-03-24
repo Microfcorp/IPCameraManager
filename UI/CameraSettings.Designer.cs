@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CameraSettings));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -39,6 +40,7 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.button15 = new System.Windows.Forms.Button();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -115,8 +117,15 @@
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.button16 = new System.Windows.Forms.Button();
+            this.comboBox9 = new System.Windows.Forms.ComboBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.button18 = new System.Windows.Forms.Button();
+            this.button17 = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.button15 = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -145,6 +154,8 @@
             this.tabPage7.SuspendLayout();
             this.groupBox14.SuspendLayout();
             this.groupBox13.SuspendLayout();
+            this.tabPage8.SuspendLayout();
+            this.groupBox17.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -156,6 +167,7 @@
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Controls.Add(this.tabPage7);
+            this.tabControl1.Controls.Add(this.tabPage8);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -264,6 +276,16 @@
             this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Порты";
+            // 
+            // button15
+            // 
+            this.button15.Location = new System.Drawing.Point(253, 16);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(33, 74);
+            this.button15.TabIndex = 9;
+            this.button15.Text = "А\r\nВ\r\nТ\r\nО";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
             // numericUpDown3
             // 
@@ -429,7 +451,7 @@
             // 
             // textBox9
             // 
-            this.textBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox9.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox9.Location = new System.Drawing.Point(80, 148);
             this.textBox9.Name = "textBox9";
             this.textBox9.ReadOnly = true;
@@ -448,7 +470,7 @@
             // 
             // textBox8
             // 
-            this.textBox8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox8.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox8.Location = new System.Drawing.Point(60, 125);
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
@@ -467,7 +489,7 @@
             // 
             // textBox7
             // 
-            this.textBox7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox7.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox7.Location = new System.Drawing.Point(129, 100);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
@@ -486,7 +508,7 @@
             // 
             // textBox6
             // 
-            this.textBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox6.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox6.Location = new System.Drawing.Point(116, 75);
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;
@@ -505,7 +527,7 @@
             // 
             // textBox5
             // 
-            this.textBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox5.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox5.Location = new System.Drawing.Point(80, 51);
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
@@ -524,7 +546,7 @@
             // 
             // textBox4
             // 
-            this.textBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox4.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox4.Location = new System.Drawing.Point(60, 25);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
@@ -615,6 +637,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(237, 20);
             this.textBox1.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.textBox1, "Имя используется только внутри программы");
             // 
             // label3
             // 
@@ -625,6 +648,7 @@
             this.label3.Size = new System.Drawing.Size(32, 15);
             this.label3.TabIndex = 4;
             this.label3.Text = "Имя";
+            this.toolTip1.SetToolTip(this.label3, "Имя используется только внутри программы");
             // 
             // tabPage3
             // 
@@ -767,7 +791,7 @@
             // 
             // textBox11
             // 
-            this.textBox11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox11.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox11.Location = new System.Drawing.Point(69, 25);
             this.textBox11.Name = "textBox11";
             this.textBox11.ReadOnly = true;
@@ -810,7 +834,7 @@
             // 
             // textBox10
             // 
-            this.textBox10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox10.BackColor = System.Drawing.Color.LightSkyBlue;
             this.textBox10.Location = new System.Drawing.Point(98, 19);
             this.textBox10.Name = "textBox10";
             this.textBox10.ReadOnly = true;
@@ -1103,21 +1127,85 @@
             this.label18.TabIndex = 0;
             this.label18.Text = "Первичным";
             // 
+            // tabPage8
+            // 
+            this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.tabPage8.Controls.Add(this.groupBox17);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(606, 283);
+            this.tabPage8.TabIndex = 7;
+            this.tabPage8.Text = "Настройка карты";
+            // 
+            // groupBox17
+            // 
+            this.groupBox17.Controls.Add(this.button16);
+            this.groupBox17.Controls.Add(this.comboBox9);
+            this.groupBox17.Controls.Add(this.label24);
+            this.groupBox17.Controls.Add(this.button18);
+            this.groupBox17.Controls.Add(this.button17);
+            this.groupBox17.Location = new System.Drawing.Point(8, 6);
+            this.groupBox17.Name = "groupBox17";
+            this.groupBox17.Size = new System.Drawing.Size(590, 108);
+            this.groupBox17.TabIndex = 3;
+            this.groupBox17.TabStop = false;
+            this.groupBox17.Text = "Файл карты";
+            // 
+            // button16
+            // 
+            this.button16.Location = new System.Drawing.Point(299, 50);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(285, 23);
+            this.button16.TabIndex = 7;
+            this.button16.Text = "Удалить текущий пакет";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click_1);
+            // 
+            // comboBox9
+            // 
+            this.comboBox9.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox9.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.comboBox9.FormattingEnabled = true;
+            this.comboBox9.Location = new System.Drawing.Point(84, 22);
+            this.comboBox9.Name = "comboBox9";
+            this.comboBox9.Size = new System.Drawing.Size(500, 21);
+            this.comboBox9.TabIndex = 6;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(6, 25);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(72, 13);
+            this.label24.TabIndex = 5;
+            this.label24.Text = "Пакет карты";
+            // 
+            // button18
+            // 
+            this.button18.Location = new System.Drawing.Point(9, 79);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(575, 23);
+            this.button18.TabIndex = 4;
+            this.button18.Text = "Запустить редактор карты";
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
+            // 
+            // button17
+            // 
+            this.button17.Location = new System.Drawing.Point(6, 49);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(287, 23);
+            this.button17.TabIndex = 3;
+            this.button17.Text = "Создать новый пакет";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
+            // 
             // backgroundWorker1
             // 
             this.backgroundWorker1.WorkerReportsProgress = true;
             this.backgroundWorker1.WorkerSupportsCancellation = true;
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            // 
-            // button15
-            // 
-            this.button15.Location = new System.Drawing.Point(253, 16);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(33, 74);
-            this.button15.TabIndex = 9;
-            this.button15.Text = "А\r\nВ\r\nТ\r\nО";
-            this.button15.UseVisualStyleBackColor = true;
-            this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
             // CameraSettings
             // 
@@ -1171,6 +1259,9 @@
             this.groupBox14.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.groupBox13.PerformLayout();
+            this.tabPage8.ResumeLayout(false);
+            this.groupBox17.ResumeLayout(false);
+            this.groupBox17.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1265,5 +1356,13 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.GroupBox groupBox17;
+        private System.Windows.Forms.Button button18;
+        private System.Windows.Forms.Button button17;
+        private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.ComboBox comboBox9;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
