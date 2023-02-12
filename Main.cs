@@ -595,8 +595,9 @@ namespace IPCamera
 
         private void загрузкаToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Download cnv = new Download(Selected);
-            cnv.ShowDialog();
+            //Download cnv = new Download(Selected);
+            //cnv.ShowDialog();
+            MessageBox.Show("Ошибка. Функция перенесена в новый интерфейс");
         }
 
         private void просмотрФотоToolStripMenuItem1_Click(object sender, EventArgs e)

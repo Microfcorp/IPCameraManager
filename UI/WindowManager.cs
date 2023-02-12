@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace IPCamera.UI
@@ -23,12 +24,13 @@ namespace IPCamera.UI
         /// </summary>
         /// <param name="mainForm">Основная форма с менеджером вкладок</param>
         /// <param name="frm">Форма</param>
-        public static void OpenToWindowManager(this Form frm, MainForm mainForm)
+        public static Form OpenToWindowManager(this Form frm, MainForm mainForm)
         {
             frm.FormClosing += (o, e) => { frm = null; };
             frm.Show();
             var Tabs = TabBox.CreateFromForm(frm);
             mainForm.flowLayoutPanel2.Controls.Add(Tabs);
+            return frm;
         }
         /// <summary>
         /// Откравает данную форму в оконном менэджере с указанием имени вкладки
@@ -36,12 +38,13 @@ namespace IPCamera.UI
         /// <param name="frm">Форма</param>
         /// <param name="mainForm">Основная форма с менеджером вкладок</param>
         /// <param name="Text">Имя вкладки</param>
-        public static void OpenToWindowManager(this Form frm, MainForm mainForm, string Text)
+        public static Form OpenToWindowManager(this Form frm, MainForm mainForm, string Text)
         {
             frm.FormClosing += (o, e) => { frm = null; };
             frm.Show();
             var Tabs = TabBox.CreateFromForm(frm, Text);
             mainForm.flowLayoutPanel2.Controls.Add(Tabs);
+            return frm;
         }
 
         /// <summary>
@@ -86,6 +89,38 @@ namespace IPCamera.UI
                 gr.AddRectangle(new Rectangle(c.Location, c.Size));
             }
             Element.Region = new Region(gr);
+        }
+
+        /// <summary>
+        /// Позиционирует элемент по центру указанного родительского элемента в экранных координатах
+        /// </summary>
+        /// <param name="Element"></param>
+        /// <param name="ParentElement"></param>
+        public static void PointToCenter(this Control Element, Control ParentElement)
+        {
+            //Element.Location = new Point(ParentElement.Width / 2 - Element.Width / 2, ParentElement.Height / 2 - Element.Height / 2);
+            Element.Location = ParentElement.PointToScreen(new Point((ParentElement.Width / 2) - (Element.Width / 2), (ParentElement.Height / 2) - (Element.Height / 2)));
+        }
+
+        /// <summary>
+        /// Позиционирует элемент по центру собственного родительского элемента в экранных координатах
+        /// </summary>
+        /// <param name="Element"></param>
+        /// <param name="ParentElement"></param>
+        public static void PointToCenter(this Control Element)
+        {
+            PointToCenter(Element, Element.Parent);
+        }
+
+        /// <summary>
+        /// Запускает поток и возвращает его
+        /// </summary>
+        /// <param name="th">Поток для запуска</param>
+        /// <returns></returns>
+        public static Thread StartThread(this Thread th)
+        {
+            th.Start();
+            return th;
         }
     }
 }

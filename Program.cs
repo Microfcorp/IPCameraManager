@@ -19,6 +19,7 @@ namespace IPCamera
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Console.WriteLine(DLL.CommonFunctions.ShouldSystemUseDarkMode());
             Parser p = new Parser(args);
 
             var vers = NetworkUpdate.GetVersionServer();

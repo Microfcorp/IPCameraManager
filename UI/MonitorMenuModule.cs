@@ -12,7 +12,7 @@ using System.Drawing.Drawing2D;
 
 namespace IPCamera.UI
 {
-    public partial class MonitorMenuModule : UserControl
+    public partial class MonitorMenuModule : UserControl, IUI
     {
         public Monitors.MonitorSettings monitorset;
         uint id;
@@ -23,14 +23,16 @@ namespace IPCamera.UI
         public MonitorMenuModule(uint Mid) : this()
         {
             id = Mid;
-            monitorset = MonitorsController.Load()[id];
-            label1.Text = monitorset.Name;
-            linkLabel2.Text = monitorset.Monitors.Length.ToString();
+            UpdateForm();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            (new MonitorSettings(id)).OpenToWindowManager((MainForm)ParentForm);
+            var MS = new MonitorSettings(id);
+            MS.OnSave += (a, b) => { UpdateForm(); };
+            MS.FormClosed += (a, b) => Enabled = true;
+            MS.OpenToWindowManager((MainForm)ParentForm).PointToCenter(ParentForm);
+            Enabled = false;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -69,6 +71,13 @@ namespace IPCamera.UI
                 tmp += item.GetCamera.NameCamera + Environment.NewLine;
             }
             MessageBox.Show(tmp);
+        }
+
+        public void UpdateForm()
+        {
+            monitorset = MonitorsController.Load()[id];
+            label1.Text = monitorset.Name;
+            linkLabel2.Text = monitorset.Monitors.Length.ToString();
         }
     }
 }

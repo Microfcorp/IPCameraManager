@@ -156,7 +156,7 @@ namespace IPCamera.UI
             var player = new CameraSettings(GenSelected);
             button1.Enabled = false;
             player.FormClosing += (o, q) => { button1.Enabled = true; IP = IP; };
-            player.OpenToWindowManager((MainForm)ParentForm, "Настройки - " + Camera.NameCamera);
+            player.OpenToWindowManager((MainForm)ParentForm, "Настройки - " + Camera.NameCamera).PointToCenter(ParentForm);
         }
 
         private void button4_Click(object sender, EventArgs e)

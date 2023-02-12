@@ -10,6 +10,6 @@ namespace IPCamera.Network.AutoUpdate
         /// <summary>
         /// Возвращает текущую версию приложения
         /// </summary>
-        public static VersionInfo CurrentVersions = new VersionInfo(29, new DateTime(2022, 03, 24), "Версия 2.9", "Добавлена карта");
+        public static VersionInfo CurrentVersions = new VersionInfo(30, new DateTime(2023, 02, 12), "Версия 3.0", "");
     }
 }

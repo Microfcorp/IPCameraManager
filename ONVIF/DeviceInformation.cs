@@ -192,7 +192,14 @@ namespace IPCamera.ONVIF
             client.ClientCredentials.UserName.UserName = set.Login;
             client.ClientCredentials.UserName.Password = set.Password;
 
-            var t = client.GetUsers();
+            var t = new User[0];
+            try
+            {
+                t = client.GetUsers();
+            }
+            catch
+            {
+            }
 
             return t;
         }

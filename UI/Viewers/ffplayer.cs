@@ -76,9 +76,10 @@ namespace IPCamera.UI.Viewers
             var h = Handle;
             ffplay.EnableRaisingEvents = true;
             ffplay.OutputDataReceived += (o, e) => Debug.WriteLine(e.Data ?? "NULL", "ffplay");
-            ffplay.ErrorDataReceived += (o, e) => { 
+            ffplay.ErrorDataReceived += (o, e) => {
+               // Console.WriteLine(e.Data);
                 if (GroupV.FFPGV.IsRunFFPLAY(e.Data) && !IsRunOK) 
-                {
+                {                   
                     IsRunOK = true;
                     Thread.Sleep(10);
                     ffplay.MainWindowHandle.SetParent(h);

@@ -63,7 +63,7 @@
             this.checkedListBox1.HorizontalScrollbar = true;
             this.checkedListBox1.Location = new System.Drawing.Point(12, 12);
             this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(387, 304);
+            this.checkedListBox1.Size = new System.Drawing.Size(387, 293);
             this.checkedListBox1.TabIndex = 0;
             this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
             // 
@@ -72,12 +72,12 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.конвертироватьИВоспроизвестиToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(259, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(272, 26);
             // 
             // конвертироватьИВоспроизвестиToolStripMenuItem
             // 
             this.конвертироватьИВоспроизвестиToolStripMenuItem.Name = "конвертироватьИВоспроизвестиToolStripMenuItem";
-            this.конвертироватьИВоспроизвестиToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+            this.конвертироватьИВоспроизвестиToolStripMenuItem.Size = new System.Drawing.Size(271, 22);
             this.конвертироватьИВоспроизвестиToolStripMenuItem.Text = "Конвертировать и воспроизвести";
             this.конвертироватьИВоспроизвестиToolStripMenuItem.Click += new System.EventHandler(this.конвертироватьИВоспроизвестиToolStripMenuItem_Click);
             // 
@@ -143,7 +143,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(405, 157);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(192, 13);
+            this.label1.Size = new System.Drawing.Size(204, 13);
             this.label1.TabIndex = 7;
             this.label1.Text = "Частота кадров (4,05 по умолчанию)";
             this.label1.Visible = false;
@@ -151,14 +151,14 @@
             // numericUpDown1
             // 
             this.numericUpDown1.DecimalPlaces = 2;
-            this.numericUpDown1.Location = new System.Drawing.Point(603, 155);
+            this.numericUpDown1.Location = new System.Drawing.Point(615, 155);
             this.numericUpDown1.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             65536});
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(56, 20);
+            this.numericUpDown1.Size = new System.Drawing.Size(56, 22);
             this.numericUpDown1.TabIndex = 8;
             this.numericUpDown1.Value = new decimal(new int[] {
             405,
@@ -181,7 +181,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(64, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(69, 17);
             this.toolStripStatusLabel1.Text = "Ожидание";
             // 
             // button6
@@ -228,9 +228,9 @@
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(480, 126);
+            this.radioButton1.Location = new System.Drawing.Point(490, 126);
             this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(47, 17);
+            this.radioButton1.Size = new System.Drawing.Size(46, 17);
             this.radioButton1.TabIndex = 15;
             this.radioButton1.TabStop = true;
             this.radioButton1.Text = "VBR";
@@ -240,9 +240,9 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(533, 126);
+            this.radioButton2.Location = new System.Drawing.Point(542, 126);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(47, 17);
+            this.radioButton2.Size = new System.Drawing.Size(46, 17);
             this.radioButton2.TabIndex = 16;
             this.radioButton2.Text = "CBR";
             this.radioButton2.UseVisualStyleBackColor = true;
@@ -253,7 +253,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(405, 128);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 13);
+            this.label2.Size = new System.Drawing.Size(79, 13);
             this.label2.TabIndex = 17;
             this.label2.Text = "Тип битрейта";
             // 

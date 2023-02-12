@@ -136,21 +136,49 @@ namespace IPCamera.UI
 
         void SaveSettings()
         {
+            LoadingForm lf = new LoadingForm(true, "Сохранение настроек камеры...");
+            lf.Show();
+            lf.PointToCenter(Application.OpenForms[0]);
+            lf.Update();
+
+            lf.CalculateToProcents(1, 5);
             SaveNetworkSettings();
+
+            lf.CalculateToProcents(2, 5);
             SaveAbout();
+
+            lf.CalculateToProcents(3, 5);
             SavePTZ();
+
+            lf.CalculateToProcents(4, 5);
             SaveVideo();
 
+            lf.CalculateToProcents(5, 5);
             SaveStructures();
+
+            lf.Close();
         }
 
         void LoadSettings()
         {
-            LoadNetworkSettings(); //загрузка сетевых настроек
+            LoadingForm lf = new LoadingForm(true, "Загрузка настроек камеры...");
+            lf.Show();
+            lf.PointToCenter(Application.OpenForms[0]);
+            lf.Update();
+
+            lf.CalculateToProcents(1, 5);
+            LoadNetworkSettings(); //загрузка сетевых настроек          
+            if (comboBox1.Text == "") return;
+            lf.CalculateToProcents(2, 5);
             LoadAbout();
+            lf.CalculateToProcents(2, 5);
             LoadPTZ();
+            lf.CalculateToProcents(3, 5);
             LoadONVIF();
+            lf.CalculateToProcents(4, 5);
             LoadVideo();
+            lf.CalculateToProcents(5, 5);
+            lf.Close();
         }
 
         void LoadMapsFiles()
@@ -161,8 +189,8 @@ namespace IPCamera.UI
         }
 
         private void CameraSettings_Load(object sender, EventArgs e)
-        {
-            SearchONVIF();
+        {           
+            SearchONVIF();            
             LoadSettings();
             LoadMapsFiles();
         }

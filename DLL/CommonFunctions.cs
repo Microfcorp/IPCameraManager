@@ -253,6 +253,9 @@ namespace IPCamera.DLL
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetWindowTextLength(this IntPtr hWnd);
 
+        [DllImport("UXTheme.dll", SetLastError = true, EntryPoint = "#138")]
+        public static extern bool ShouldSystemUseDarkMode();
+
         /// <summary>
         /// Индексы параметров окна
         /// </summary>

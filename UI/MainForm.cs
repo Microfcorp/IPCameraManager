@@ -28,21 +28,6 @@ namespace IPCamera.UI
             }
         }
 
-        private void стараяПанельУправленияToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var m = new Main(new ComandArgs.Parser(new string[0]));
-            m.Show();
-        }
-
-        private void проверкаОбновленийToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var vers = NetworkUpdate.GetVersionServer();
-            if (vers > CurrentVersion.CurrentVersions)
-                MessageBox.Show("Доспуна новая версия. Перезапустите приложение для обновления", "IPCamera Manager", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            else
-                MessageBox.Show("У вас уже установлена последняя версия");
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             (new Viewers.GroupPlay()).OpenToWindowManager(this, "Групповой просмотр");
@@ -76,11 +61,6 @@ namespace IPCamera.UI
         private void button3_Click(object sender, EventArgs e)
         {
             (new ServiceForm()).OpenToWindowManager(this);
-        }
-
-        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
         }
     }
 }

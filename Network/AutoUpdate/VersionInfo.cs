@@ -90,5 +90,15 @@ namespace IPCamera.Network.AutoUpdate
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(URLDownload);
             return hashCode;
         }
+
+        public override string ToString()
+        {
+            var t = Version.ToString();
+            var rt = "";
+            foreach (var item in t)
+                rt += item + ".";
+            rt = rt.Substring(0, rt.Length - 1);
+            return rt;
+        }
     }
 }

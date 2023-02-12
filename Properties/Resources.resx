@@ -121,41 +121,44 @@
   <data name="png-transparent-computer-icons-upload-youtube-youtube-arrow-иконка-download-youtube-thumbnail" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\png-transparent-computer-icons-upload-youtube-youtube-arrow-иконка-download-youtube-thumbnail.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="видео" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\видео.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="a1bb0cc10512df82afd421a77097cb91_w200" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\a1bb0cc10512df82afd421a77097cb91_w200.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="record" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\record.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="удалить" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\удалить.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="settings-3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\settings-3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="вправо" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\вправо.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="54544" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\54544.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="4dc11d17f5292fd463a60aa2bbb41f6a_w200" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\4dc11d17f5292fd463a60aa2bbb41f6a_w200.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="4595139" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\4595139.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="влево" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\влево.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="вправо" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\вправо.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ov" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ov.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="логи" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\логи.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="вверх" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\вверх.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="record" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\record.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="54544" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\54544.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="kisspng-computer-icons-download-loading-icon-5b2111d6e12091.5184822115288939109221" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\kisspng-computer-icons-download-loading-icon-5b2111d6e12091.5184822115288939109221.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="видео" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\видео.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="of" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\of.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="kisspng-computer-icons-download-loading-icon-5b2111d6e12091.5184822115288939109221" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\kisspng-computer-icons-download-loading-icon-5b2111d6e12091.5184822115288939109221.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Вниз" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Вниз.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -163,8 +166,8 @@
   <data name="camera" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\camera.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="логи" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\логи.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="a1bb0cc10512df82afd421a77097cb91_w200" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\a1bb0cc10512df82afd421a77097cb91_w200.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Конвертирование" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Конвертирование.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -172,10 +175,10 @@
   <data name="norecord" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\norecord.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="4dc11d17f5292fd463a60aa2bbb41f6a_w200" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\4dc11d17f5292fd463a60aa2bbb41f6a_w200.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="settings-3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\settings-3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="4595139" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\4595139.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Камера крутится" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Камера крутится.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

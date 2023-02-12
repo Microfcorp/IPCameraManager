@@ -35,10 +35,10 @@ namespace IPCamera.GroupV
         {
             InitializeComponent();
         }
-
+        //4.66 A-V:  0.028 fd=   0 aq=   33KB vq=  347KB sq=    0B f=1/1
         public static bool IsRunFFPLAY(string str)
         {
-            return str != null && str.Contains("M-V:") && str.Contains("fd=") && str.Contains("aq=") && str.Contains("vq=") && str.Contains("sq=");
+            return str != null && (str.Contains("M-V:") || str.Contains("A-V:")) && str.Contains("fd=") && str.Contains("aq=") && str.Contains("vq=") && str.Contains("sq=");
         }
 
         public static bool IsRunMPLAYER(string str)

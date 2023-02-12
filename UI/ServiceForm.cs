@@ -1,4 +1,5 @@
-﻿using IPCamera.Settings;
+﻿using IPCamera.Network.AutoUpdate;
+using IPCamera.Settings;
 using IPCamera.Settings.StaticMembers;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 
 namespace IPCamera.UI
 {
-    public partial class ServiceForm : Form
+    public partial class ServiceForm : Form, IUI
     {
         public ServiceForm()
         {
@@ -36,11 +37,7 @@ namespace IPCamera.UI
 
         private void ServiceForm_Load(object sender, EventArgs e)
         {
-            numericUpDown1.Value = ImageSettings.FPS;
-            numericUpDown2.Value = ImageSettings.Padding;
-            numericUpDown3.Value = PTZSettings.StepTimeout;
-            numericUpDown4.Value = PTZSettings.Timeout;
-            checkBox1.Checked = PTZSettings.PTZKeys;
+            UpdateForm();
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
@@ -93,6 +90,34 @@ namespace IPCamera.UI
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             PTZSettings.PTZKeys = checkBox1.Checked;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var vers = NetworkUpdate.GetVersionServer();
+            if (vers > CurrentVersion.CurrentVersions)
+                MessageBox.Show("Доспуна новая версия. Перезапустите приложение для обновления", "Microf IP Camera Manager", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else
+                MessageBox.Show("У вас уже установлена последняя версия");
+        }
+
+        public void UpdateForm()
+        {
+            linkLabel1.Text = CurrentVersion.CurrentVersions.ToString();
+            numericUpDown1.Value = ImageSettings.FPS;
+            numericUpDown2.Value = ImageSettings.Padding;
+            numericUpDown3.Value = PTZSettings.StepTimeout;
+            numericUpDown4.Value = PTZSettings.Timeout;
+            checkBox1.Checked = PTZSettings.PTZKeys;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if(MessageBox.Show("Старый интерфейс не рекомендуется к использованию и будет окончательно удален в версиях 3.х. Мы крайне не рекомендуем использовать его. Вы действительно хотите перейти в старый интерфейс?", "Microf IP Camera Manager", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                var m = new Main(new ComandArgs.Parser(new string[0]));
+                m.Show();
+            }
         }
     }
 }

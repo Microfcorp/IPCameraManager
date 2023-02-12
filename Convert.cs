@@ -142,7 +142,8 @@ namespace IPCamera
             }
             catch { }
 
-            if(IsPlay) Process.Start("mplayer.exe", checkedListBox1.Items[Selected] + "_ff.mkv -x 640 -y 360");
+            //if(IsPlay) Process.Start("ffplay.exe", checkedListBox1.Items[Selected] + "_ff.mkv -x 640 -y 360");
+            if (IsPlay) new UI.Viewers.FilePlay(checkedListBox1.Items[Selected] + "_ff.mkv", Settings.TypeViewers.MPlayer).Show();
         }
 
         private void GetFiles(string directory)

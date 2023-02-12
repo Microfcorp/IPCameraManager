@@ -17,6 +17,11 @@ namespace IPCamera.UI
         uint mid;
         Monitors.MonitorSettings ms;
 
+        /// <summary>
+        /// Возникает при сохранении настроек
+        /// </summary>
+        public event EventHandler OnSave;
+
         public MonitorSettings()
         {
             InitializeComponent();
@@ -45,6 +50,7 @@ namespace IPCamera.UI
             var md = MonitorsController.Load();
             md[mid] = ms;
             MonitorsController.Save(md);
+            OnSave?.Invoke(this, new EventArgs());
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
